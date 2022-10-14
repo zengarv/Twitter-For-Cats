@@ -4,6 +4,8 @@ pygame.init()
 from BorrowedFromLeInternet import SpriteSheet
 
 
+# User Settings
+
 # Performance
 WIDTH, HEIGHT = 625, 1000
 FPS = 60   

@@ -1,22 +1,13 @@
 import pygame, random
+import pandas as pd
 from Settings import *
 import os
 from math import sin, pi
 pygame.init()
 
 # Load Stuff
-def load_adj():
-    with open("adj.txt", 'r') as f: 
-        return f.read().split('\n')
-def load_obj():
-    with open("obj.txt", 'r') as f: 
-        return f.read().split('\n')
-def load_handles():
-    with open("handles.txt", 'r') as f: 
-        return f.read().split('\n')
-def load_tweets():
-    with open("tweets.txt", 'r') as f: 
-        return f.read().split(' =)\n')
+usernames = pd.read_csv('https://raw.githubusercontent.com/zengarv/Twitter-For-Cats/master/rngusernames.csv')
+tweets = pd.read_csv('https://raw.githubusercontent.com/zengarv/Twitter-For-Cats/master/tweets.csv', delimiter=' `', header=None)
 
 def load_screen(screen, font):
     # Make the load stuff part look good
@@ -28,8 +19,6 @@ def load_screen(screen, font):
     screen.blit(loading, ((WIDTH-loading.get_width())//2, (HEIGHT-loading.get_height()+GRUMPS.get_height())//2 + 30))
     pygame.display.update()
 
-# Actually load the stuff here
-adj, obj, handles, tweets = load_adj(), load_obj(), load_handles(), load_tweets()
 
 # cat_crossbones = pygame.transform.smoothscale(pygame.image.load(r'images\catcrossbones.png').convert_alpha(), (40, 40))
 cat_button_raised = pygame.transform.smoothscale(pygame.image.load(r'images\cat crossbones\catcrossbones raised.png').convert_alpha(), (50, 50))
@@ -70,8 +59,8 @@ class Tweet:
         self.pos = pos
         self.alpha = 255
         self.width = width
-        self.tweettext = random.choice(tweets)
-        self.hand = random.choice([random.choice(handles), random.choice(adj) + random.choice(obj)])
+        self.tweettext = tweets.at[random.randint(0, len(tweets.index)-1), 0]
+        self.hand = random.choice([usernames.at[random.randint(0, len(usernames.index)-1), 'Handles'], usernames.at[random.randint(0, len(usernames.index)-1), 'Adj'] + usernames.at[random.randint(0, len(usernames.index)-1), 'Obj']])
         self.cat_img = os.getcwd() + '\\cats\\' + random.choice(os.listdir(os.getcwd() + '\\cats'))
         
         self.username_surf = username_font.render(self.hand, True, username_text_col)

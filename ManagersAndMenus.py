@@ -7,7 +7,7 @@ pygame.init()
 
 # Load Stuff
 usernames = pd.read_csv('https://raw.githubusercontent.com/zengarv/Twitter-For-Cats/master/rngusernames.csv')
-tweets = pd.read_csv('https://raw.githubusercontent.com/zengarv/Twitter-For-Cats/master/tweets.csv', delimiter=' `', header=None)
+tweets = pd.read_csv('https://raw.githubusercontent.com/zengarv/Twitter-For-Cats/master/tweets.csv', delimiter=' `', header=None, engine='python')
 
 def load_screen(screen, font):
     # Make the load stuff part look good
@@ -242,8 +242,8 @@ class BurgerMenu:
     def hover(self, pos):
         self.selected_menu.hover(pos)
     
-    def scroll(self, *args):
-        self.selected_menu.scroll(*args)
+    def scroll(self, event, mouse_pos):
+        self.selected_menu.scroll(event, mouse_pos)
     
     def keydown(self, event):
         self.selected_menu.keydown(event)
@@ -277,7 +277,7 @@ class BMBuilder:
     def hover(self, pos):
         pass
 
-    def scroll(self, delta):
+    def scroll(self, event, pos):
         pass
 
     def switch_focus(self):

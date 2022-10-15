@@ -1,4 +1,3 @@
-from keyword import iskeyword
 import pygame, random
 from Settings import *
 import os

@@ -1,7 +1,7 @@
 # This is for the things the thingy needs to thing properly
 import pygame
 from Settings import *
-screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 from ManagersAndMenus import TweetManager, load_screen, BurgerMenu
 
 # Wow so cool initializing and stuff
@@ -12,12 +12,13 @@ load_screen(screen, pygame.font.Font('fonts\\chirp-regular-web.woff', 40))
 clock = pygame.time.Clock()
 
 from ManagersAndMenus2 import Piano, CountCats
+from ManagersAndMenus3 import Catroom
 from Miscellaneous import Rat, SelfDestruct, Paw
 from fireworks import *
 
 
 SD = SelfDestruct(screen)
-BM = BurgerMenu(screen, [[TweetManager(screen, (0, 80)), "Tweets", r'cats\grumps.png'], [Piano(screen, (0, 80)), "Piano", r'images\icons\piano.png'], [CountCats(screen, (0, 80)), "SleepyTime", r'images\icons\sleepycat.png']])
+BM = BurgerMenu(screen, [[TweetManager(screen, (0, 80)), "Tweets", r'cats\grumps.png'], [Piano(screen, (0, 80)), "Piano", r'images\icons\piano.png'], [CountCats(screen, (0, 80)), "SleepyTime", r'images\icons\sleepycat.png'], [Catroom(screen, (0, 80)), "CatChat", r'images\icons\Catchat.png']])
 grumps_icon = pygame.transform.smoothscale(pygame.transform.flip(pygame.image.load(r'cats\grumps.png'), True, False), (55, 55))
 grumps_icon_rect = grumps_icon.get_rect()
 grumps_icon_rect.midright = WIDTH-10, 40
@@ -84,6 +85,8 @@ while run:
             
     screen.fill(tweet_bg_col)
 
+    screen.blit(l, l_rect)
+    
     BM.update(dt, mouse_pos)
     BM.draw()
 
@@ -105,7 +108,6 @@ while run:
     rat.update(dt)   
     if not SD.initiated: rat.draw()
     
-    screen.blit(l, l_rect)
     screen.blit(grumps_icon, grumps_icon_rect)
     
     if show_FPS: screen.blit(fps_font.render(f'{fps:0.2f}', True, (25, 190, 48)), (550, 20))

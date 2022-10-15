@@ -33,8 +33,6 @@ fireworks_color_offset = 50
 mouse_time_ll = 5
 mouse_time_ul = 10   # In seconds
 
-
-
 # Self Destruct 
 BEEP_SOUND = mixer.Sound(r"sounds\beep.mp3")
 g_meow = mixer.Sound(r"sounds\g_meow.mp3")

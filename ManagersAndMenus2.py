@@ -49,10 +49,15 @@ class PianoKey:
             self.tiles[-1] = self.tiles[-1].inflate((0, self.tile_vel))
             self.tiles[-1].top += self.tile_vel/2
             
-        for tile in self.tiles:
+        for i, tile in enumerate(self.tiles):
             tile.top -= self.tile_vel
+            
+            if tile.top < self.topleft[1]:
+                self.tiles[i] = self.tiles[i].inflate((0, -self.tile_vel))
+                self.tiles[i].top += self.tile_vel/2
+                
             if tile.bottom < self.topleft[1]:
-                self.tiles.remove(tile)
+                self.tiles.pop(i)
     
 class Piano(BMBuilder):
     def __init__(self, screen, pos):
@@ -114,7 +119,7 @@ class Piano(BMBuilder):
             self.screen.blit(self.help_text, self.help_text_rect)
             
         self.screen.blit(self.qm, self.qm_rect)
-        pygame.draw.rect(self.screen, tweet_bg_col, (0, 0, WIDTH, self.pos[1]))
+
         
         self.screen.blit(self.cat_headphones, self.ch_rect)
         
@@ -226,7 +231,7 @@ class CountCats(BMBuilder):
         self.count = 0
         self.draw_count_surf()
         
-        self.target = 10
+        self.target = 100
         self.aloosuit_rect = aloosuit.get_rect()
         self.aloosuit_rect.midbottom = WIDTH/2, HEIGHT + self.aloosuit_rect.height
         self.t_100 = -1

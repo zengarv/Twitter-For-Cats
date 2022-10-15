@@ -21,6 +21,7 @@ class Catroom(BMBuilder):
         self.beta = pygame.transform.smoothscale(pygame.image.load(r'images\icons\beta.png'), (290//8, 188/8))
     
     def draw(self):
-        self.screen.blit(self.strikethrough_surf, self.strikethrough_rect)
-        self.screen.blit(self.catchat_textsurf, self.catchat_textrect)
+        pass
+        # self.screen.blit(self.strikethrough_surf, self.strikethrough_rect)
+        # self.screen.blit(self.catchat_textsurf, self.catchat_textrect)
         self.screen.blit(self.beta, (self.catchat_textrect.topright[0]-20, self.catchat_textrect.topright[1]))

@@ -151,7 +151,16 @@ class BurgerMenu:
         self.slide_start = 0
         self.slide_end = 0
         
+        self.strikethrough_surf = pygame.transform.smoothscale(pygame.image.load(r'images\strikethrough.png'), (1773//10.5, 245//10.5))
+        self.strikethrough_rect = self.strikethrough_surf.get_rect()
+        self.strikethrough_rect.center = 225, 45
+
+        
     def draw(self):
+        if self.selected_menu_index != 0:
+            self.screen.blit(self.strikethrough_surf, self.strikethrough_rect)
+            self.screen.blit(self.title_textsurf, self.title_textrect)
+            
         self.selected_menu.draw()
             
         if self.slide_end >= self.t or not self.collapsed: 
@@ -206,6 +215,11 @@ class BurgerMenu:
                 if rect.collidepoint(mouse_pos):
                     self.selected_menu_index = i
                     self.selected_menu.switch_focus()
+                    
+                    self.title_textsurf = pygame.font.Font('fonts\\pico.ttf', 40).render(self.menu_names[self.selected_menu_index], True, ((54, 151, 255)))
+                    self.title_textrect = self.title_textsurf.get_rect()
+                    self.title_textrect.center = 225, 78
+                    
                     self.selected_menu = menu
                     self.selected_menu.on_focus()
                     self.collapse()

@@ -18,7 +18,7 @@ from fireworks import *
 
 
 SD = SelfDestruct(screen)
-BM = BurgerMenu(screen, [[TweetManager(screen, (0, 80)), "Tweets", r'cats\grumps.png'], [Piano(screen, (0, 80)), "Piano", r'images\icons\piano.png'], [CountCats(screen, (0, 80)), "SleepyTime", r'images\icons\sleepycat.png'], [Catroom(screen, (0, 80)), "CatChat", r'images\icons\Catchat.png']])
+BM = BurgerMenu(screen, [[TweetManager(screen, (0, 80)), "Tweets", r'cats\grumps.png'], [Piano(screen, (0, 95)), "Piano", r'images\icons\piano.png'], [CountCats(screen, (0, 95)), "SleepyTime", r'images\icons\sleepycat.png'], [Catroom(screen, (0, 95)), "CatChat", r'images\icons\Catchat.png']])
 grumps_icon = pygame.transform.smoothscale(pygame.transform.flip(pygame.image.load(r'cats\grumps.png'), True, False), (55, 55))
 grumps_icon_rect = grumps_icon.get_rect()
 grumps_icon_rect.midright = WIDTH-10, 40
@@ -90,10 +90,15 @@ while run:
     BM.update(dt, mouse_pos)
     BM.draw()
 
+    for m in paw.missiles:
+        if rat.exist and not m.has_exploded and m.rot_surf_rect.colliderect(rat.rot_rect):
+            rat.kill()
+            m.explode()
+            break
     
     if enable_fireworks:
         for f in fireworks:      
-            f.update(dt)
+            f.update(dt)  
             f.draw()
             
             if len(f.particles) == 0 and f.exploded:

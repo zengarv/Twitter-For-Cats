@@ -265,6 +265,8 @@ class Missile:
         self.at = 0
         self.anim_time = 0.15
         self.anim_i = 0
+        
+        self.draw(None)
     
     def update(self, dt):
         self.at += dt
@@ -291,9 +293,9 @@ class Missile:
             self.rot_surf = pygame.transform.rotate(self.surf_with_flicker, self.angle+180)
             self.rot_surf_rect = self.rot_surf.get_rect()
             self.rot_surf_rect.center = self.px, self.py
-            screen.blit(self.rot_surf, self.rot_surf_rect)
+            if screen != None: screen.blit(self.rot_surf, self.rot_surf_rect)
         else:
-            screen.blit(boom[self.anim_i], self.boom_rect)
+            if screen != None: screen.blit(boom[self.anim_i], self.boom_rect)
         
     def explode(self):
         impact.play()

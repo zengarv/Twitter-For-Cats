@@ -2,9 +2,7 @@ import pygame
 import numpy as np
 from math import sin, cos, radians, pi, atan2, degrees
 import random
-from itertools import chain
 from Settings import *
-import os
 
 class Rat:
     """

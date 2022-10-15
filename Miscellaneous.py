@@ -11,10 +11,11 @@ class Rat:
     Jerry refused to feature in this part (he was showing too much attitude)
     """
     def __init__(self, screen):
-        self.surf = pygame.image.load(r'images\mouse.png')
-        dimensions = self.surf.get_size()
-        scale_factor = 0.2
-        self.image = pygame.transform.smoothscale(self.surf, (dimensions[0]*scale_factor, dimensions[1]*scale_factor))
+        self.surfs = [pygame.transform.smoothscale(pygame.transform.rotate(pygame.image.load(r'images\R-A-T-S\mouse.png'), 16), (120, 77)),
+                      pygame.transform.smoothscale(pygame.image.load(r'images\R-A-T-S\ant.png'), (600//7, 435//7)),
+                      pygame.transform.smoothscale(pygame.image.load(r'images\R-A-T-S\ladybug.png'), (482//8, 436//8)),
+                      pygame.transform.smoothscale(pygame.image.load(r'images\R-A-T-S\laserdot.png').subsurface((126-22, 126-22, 44, 44)), (30, 30))]
+        self.image = random.choice(self.surfs)
         
         self.screen = screen
         self.center = np.array([0, 0])  # This is center pos.
@@ -22,7 +23,6 @@ class Rat:
         self.vel = np.array([0, 0])
         
         self.max_angular_vel = 5
-        self.angle_offset = 16
         self.exist = False
         
         self.kill()
@@ -33,7 +33,7 @@ class Rat:
         This is what Walt Disney did (he drew stuff)
         """
         if self.exist:
-            self.rotated_image = pygame.transform.rotate(self.image, (-self.angle+self.angle_offset))
+            self.rotated_image = pygame.transform.rotate(self.image, (-self.angle))
             self.rot_rect = self.rotated_image.get_rect()
             self.rot_rect.center = self.center
             self.screen.blit(self.rotated_image, (self.center[0]-self.rot_rect.width//2, self.center[1]-self.rot_rect.height//2))
@@ -82,11 +82,13 @@ class Rat:
         return self.rot_rect.colliderect(self.screen.get_rect())
     
     def spawn(self):
+        self.image = random.choice(self.surfs)
+        
         self.exist = True
         self.center[0], self.center[1] = random.randint(0, WIDTH), random.randint(0, HEIGHT)
         self.angle = random.randint(0, 360)
         
-        self.rotated_image = pygame.transform.rotate(self.image, (-self.angle+self.angle_offset))
+        self.rotated_image = pygame.transform.rotate(self.image, (-self.angle))
         self.rot_rect = self.rotated_image.get_rect()
         self.rot_rect.center = self.center
         

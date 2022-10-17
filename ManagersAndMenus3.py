@@ -31,7 +31,6 @@ class TextBox:
             screen.blit(self.text_surf, self.text_mask)
 
     def keydown(self, event):
-        print(event)
         if event.key == 13:  
             self.last_text = self.text
             self.text = ''
@@ -46,7 +45,39 @@ class TextBox:
         else:
             self.text += event.unicode
             self.text_surf = self.render_text()
-    
+
+class Message:
+    def __init__(self, text, top, user='You') -> None:
+        self.text = text
+        self.user = user
+        
+        # Drawing the surface of the message
+        font = pygame.font.SysFont('Calibri', 20)
+        
+        text_surf = render_fixwidth_text(text, font, WIDTH-10, (230, 230, 230), linespace=7)
+        text_rect = text_surf.get_rect()
+        user_surf = font.render(user, True, (100, 240, 80))
+        user_rect = user_surf.get_rect()
+
+        h_padding = 5
+        v_padding = 4
+        
+        user_rect.topleft = h_padding, v_padding
+        text_rect.topleft = h_padding, user_rect.bottom+v_padding
+        
+        self.surf = pygame.Surface((WIDTH, text_rect.bottom+v_padding))
+        self.surf.fill(tweet_bg_col)
+        self.surf.blit(user_surf, user_rect)
+        self.surf.blit(text_surf, text_rect)
+
+        self.rect = self.surf.get_rect()
+        pygame.draw.rect(self.surf, (30, 30, 30), self.rect, 1, 5)
+        
+        self.rect.top = top        
+        
+    def draw(self, screen):
+        screen.blit(self.surf, self.rect)
+        
 class Catroom(BMBuilder):
     def __init__(self, screen, pos):
         super().__init__(screen, pos)
@@ -69,19 +100,25 @@ class Catroom(BMBuilder):
         
         self.textbox = TextBox(pygame.Rect(5, HEIGHT-60, WIDTH-10-60, 50))
         
+        # Message Handling
+        self.messages = []
+        self.message_space = pygame.Rect(0, 100, WIDTH, HEIGHT-60)
         
     def draw(self):
         self.screen.blit(self.beta, (self.catchat_textrect.topright[0]-20, self.catchat_textrect.topright[1]))         # Beta icon
         self.textbox.draw(self.screen)
         self.screen.blit(self.send_icon, self.send_rect)                                                               # Send Button
         
+        for message in self.messages:
+            if self.message_space.colliderect(message.rect):
+                message.draw(self.screen)
         
     def keydown(self, event):
         if self.textbox.keydown(event):
             self.send_msg()
     
     def send_msg(self):
-        print(self.textbox.text)
+        self.messages.append(Message(self.textbox.last_text, self.message_space.top if len(self.messages) == 0 else self.messages[-1].rect.bottom))
     
     def click(self, pos):
         if self.send_rect.collidepoint(pos):

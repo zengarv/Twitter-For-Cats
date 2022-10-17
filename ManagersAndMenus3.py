@@ -7,22 +7,33 @@ from ManagersAndMenus import render_fixwidth_text, BMBuilder
 # import socket
 # import threading
 
-class TextBox:
-    def __init__(self, rect, font = pygame.font.SysFont('Calibri', 20)):
+class TextBox:        
+    def __init__(self, rect:pygame.Rect, font = pygame.font.SysFont('Calibri', 20)):
         
         self.textbox = rect
         self.text_font = font
         self.text = ''
-        self.render_text = lambda: render_fixwidth_text(self.text, self.text_font, self.textbox.width-10, (255, 255, 255))
+        
+        corner_radius = rect.height//2
+        h_padding = 2
+        v_padding = 4
+        self.text_mask = pygame.Rect(rect.left+corner_radius+h_padding, rect.top+v_padding, rect.width-2*(corner_radius + h_padding), rect.height-2*v_padding)
+    
+    def render_text(self): 
+        surf = render_fixwidth_text(self.text, self.text_font, self.text_mask.width, (255, 255, 255), linespace=7)
+        r = surf.get_rect()
+        h = min(r.height, self.text_mask.height)
+        return surf.subsurface((0, r.height - h, r.width, h))
     
     def draw(self, screen):
-        pygame.draw.rect(screen, HIGHLIGHT_COL, self.textbox, width=2, border_radius=self.textbox.height//2)    # Text Box Outer
+        pygame.draw.rect(screen, HIGHLIGHT_COL, self.textbox, width=1, border_radius=self.textbox.height//2)    # Text Box Outer
         if self.text != '': 
-            screen.blit(self.text_surf, (self.textbox.midleft[0]+self.textbox.height/2, self.textbox.topleft[1] + 4))
+            screen.blit(self.text_surf, self.text_mask)
 
     def keydown(self, event):
         print(event)
         if event.key == 13:  
+            self.last_text = self.text
             self.text = ''
             return True   # If enter is pressed  
         

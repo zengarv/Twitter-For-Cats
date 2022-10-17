@@ -73,15 +73,15 @@ while run:
             if event.key == 27:    
                 run = False
 
-            elif event.key == 32:    # Long Boi
+            elif event.key == 32 and BM.selected_menu_index != 3:    # Long Boi   # Disables missile systems in chat (the cats are friendly to each other)
                 paw.keydown(mouse_pos)
             
-            else: BM.keydown(event)
+            BM.keydown(event)
                 
         elif event.type == pygame.KEYUP:
-            if event.key == 32:
+            if event.key == 32 and BM.selected_menu_index != 3:
                 paw.keyup()   
-            else: BM.keyup(event)
+            BM.keyup(event)
             
     screen.fill(tweet_bg_col)
 

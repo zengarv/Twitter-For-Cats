@@ -91,3 +91,8 @@ username_pos = (90, 20)
 pfp_s = 50
 pfp_pos = (20, 20)
 
+
+# Message Settings
+message_font = pygame.font.SysFont('Calibri', 20)
+time_font = pygame.font.SysFont('Calibri', 14)
+

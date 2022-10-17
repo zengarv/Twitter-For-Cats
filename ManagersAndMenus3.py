@@ -1,9 +1,11 @@
+from email import message
 import pygame, random
 from Settings import *
 import os
 from math import sin, pi, cos
 pygame.init()
 from ManagersAndMenus import render_fixwidth_text, BMBuilder
+from datetime import datetime
 # import socket
 # import threading
 
@@ -62,13 +64,13 @@ class Message:
         self.text = text
         self.user = user
         
-        # Drawing the surface of the message
-        font = pygame.font.SysFont('Calibri', 20)
-        
-        text_surf = render_fixwidth_text(text, font, WIDTH-10, (230, 230, 230), linespace=7)
+        # Drawing the surface of the message      
+        text_surf = render_fixwidth_text(text, message_font, WIDTH-10, (230, 230, 230), linespace=7)
         text_rect = text_surf.get_rect()
-        user_surf = font.render(user, True, (100, 240, 80))
+        user_surf = message_font.render(user, True, (100, 240, 80))
         user_rect = user_surf.get_rect()
+        time_surf = time_font.render(datetime.now().strftime('%H:%M'), True, (80, 80, 80))
+        time_rect = time_surf.get_rect()
 
         h_padding = 5
         v_padding = 4
@@ -77,11 +79,15 @@ class Message:
         text_rect.topleft = h_padding, user_rect.bottom+v_padding
         
         self.surf = pygame.Surface((WIDTH, text_rect.bottom+v_padding))
+        self.rect = self.surf.get_rect()
+        
         self.surf.fill(tweet_bg_col)
         self.surf.blit(user_surf, user_rect)
         self.surf.blit(text_surf, text_rect)
+        
+        time_rect.bottomright = self.rect.right - 4, self.rect.bottom-4
+        self.surf.blit(time_surf, time_rect)
 
-        self.rect = self.surf.get_rect()
         pygame.draw.rect(self.surf, (30, 30, 30), self.rect, 1, 5)
         
         self.rect.top = top        

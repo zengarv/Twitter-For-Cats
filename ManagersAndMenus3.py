@@ -33,9 +33,9 @@ class TextBox:
         return surf.subsurface((0, self.text_rect.height - h, self.text_rect.width, h))
     
     def draw(self, screen):
-        pygame.draw.rect(screen, tweet_bg_col, self.textbox) 
+        # pygame.draw.rect(screen, tweet_bg_col, self.textbox) 
         pygame.draw.rect(screen, HIGHLIGHT_COL, self.textbox, width=1, border_radius=self.textbox.height//2)    # Text Box Outer
-        if self.text != '': 
+        if len(self.text.strip()) != 0: 
             if self.multiline:
                 screen.blit(self.text_surf, self.text_mask)
             else:
@@ -45,7 +45,7 @@ class TextBox:
             screen.blit(self.no_text_surf, self.no_text_surf_rect)
         
     def keydown(self, event):
-        if event.key == 13:  
+        if event.key == 13 and len(self.text.strip()) > 0:  
             self.last_text = self.text
             self.text = ''
             return True   # If enter is pressed  

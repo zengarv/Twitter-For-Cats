@@ -26,13 +26,14 @@ class TextBox:
         self.no_text_surf_rect.midleft = self.text_mask.left, self.textbox.centery
         
     def render_text(self): 
-        surf = render_fixwidth_text(self.text, self.text_font, self.text_mask.width, (255, 255, 255), linespace=7)
+        surf = render_fixwidth_text(self.text, self.text_font, self.text_mask.width, (255, 255, 255), linespace=5)
         self.text_rect = surf.get_rect()
         self.multiline = self.text_mask.height < self.text_rect.height
         h = min(self.text_rect.height, self.text_mask.height)
         return surf.subsurface((0, self.text_rect.height - h, self.text_rect.width, h))
     
     def draw(self, screen):
+        pygame.draw.rect(screen, tweet_bg_col, self.textbox) 
         pygame.draw.rect(screen, HIGHLIGHT_COL, self.textbox, width=1, border_radius=self.textbox.height//2)    # Text Box Outer
         if self.text != '': 
             if self.multiline:
@@ -65,7 +66,7 @@ class Message:
         self.user = user
         
         # Drawing the surface of the message      
-        text_surf = render_fixwidth_text(text, message_font, WIDTH-10-20, (230, 230, 230), linespace=7)
+        text_surf = render_fixwidth_text(text, message_font, WIDTH-10-20, (230, 230, 230), linespace=5)
         text_rect = text_surf.get_rect()
         user_surf = message_font.render(user, True, (100, 240, 80))
         user_rect = user_surf.get_rect()
@@ -115,11 +116,11 @@ class Catroom(BMBuilder):
         self.send_rect = self.send_icon.get_rect()
         self.send_rect.bottomright = WIDTH-10, HEIGHT-10
         
-        self.textbox = TextBox(pygame.Rect(5, HEIGHT-60, WIDTH-10-60, 50))
+        self.textbox = TextBox(pygame.Rect(5, HEIGHT-60, WIDTH-10-70, 50))
         
         # Message Handling
         self.messages = []
-        self.message_space = pygame.Rect(0, 100, WIDTH, HEIGHT-60)
+        self.message_space = pygame.Rect(0, 100, WIDTH, HEIGHT-100-65)
 
         # Scrolling
         self.scroll_vel = 0
@@ -127,13 +128,15 @@ class Catroom(BMBuilder):
         self.max_scroll_vel = 15
         
     def draw(self):
-        self.screen.blit(self.beta, (self.catchat_textrect.topright[0]-20, self.catchat_textrect.topright[1]))         # Beta icon
+        for message in self.messages:
+            if self.message_space.contains(message.rect):
+                message.draw(self.screen)
+        
         self.textbox.draw(self.screen)
+        
+        self.screen.blit(self.beta, (self.catchat_textrect.topright[0]-20, self.catchat_textrect.topright[1]))         # Beta icon
         self.screen.blit(self.send_icon, self.send_rect)                                                               # Send Button
         
-        for message in self.messages:
-            if self.message_space.colliderect(message.rect):
-                message.draw(self.screen)
         
     def keydown(self, event):
         if self.textbox.keydown(event):
@@ -153,9 +156,21 @@ class Catroom(BMBuilder):
             self.scroll_vel = max(-self.max_scroll_vel, self.scroll_vel) if self.scroll_vel < 0 else min(self.max_scroll_vel, self.scroll_vel)
     
     def move_by(self, increment):
-        top_y, bottom_y = self.messages[0].rect.top, self.messages[-1].bottom
+        top_y, bottom_y = self.messages[0].rect.top, self.messages[-1].rect.bottom
         if top_y < self.message_space.top or bottom_y > self.message_space.bottom:
             del_x, del_y = increment
-        
-        # TODO: Implement scrolling
+            
+            if del_y + top_y > self.message_space.top:
+                del_y = self.message_space.top - top_y
+                self.scroll_vel = 0
+            elif del_y + bottom_y < self.message_space.bottom:
+                del_y = self.message_space.bottom - bottom_y
+                self.scroll_vel = 0
+            
+            for msg in self.messages:
+                msg.rect.top += del_y
+    
+    def scroll(self, s, mouse_pos):  
+        self.scroll_vel += s[1]*scroll_senstivity
+                
         # TODO: Catmode: Toggle that converts all text to MEOW MEOW MEOW

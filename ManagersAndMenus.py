@@ -157,11 +157,11 @@ class BurgerMenu:
 
         
     def draw(self):
+        self.selected_menu.draw()
+        
         if self.selected_menu_index != 0:
             self.screen.blit(self.strikethrough_surf, self.strikethrough_rect)
             self.screen.blit(self.title_textsurf, self.title_textrect)
-            
-        self.selected_menu.draw()
             
         if self.slide_end >= self.t or not self.collapsed: 
             self.screen.blit(self.menu_surf, self.menu_rect)

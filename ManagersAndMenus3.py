@@ -65,14 +65,14 @@ class Message:
         self.user = user
         
         # Drawing the surface of the message      
-        text_surf = render_fixwidth_text(text, message_font, WIDTH-10, (230, 230, 230), linespace=7)
+        text_surf = render_fixwidth_text(text, message_font, WIDTH-10-20, (230, 230, 230), linespace=7)
         text_rect = text_surf.get_rect()
         user_surf = message_font.render(user, True, (100, 240, 80))
         user_rect = user_surf.get_rect()
         time_surf = time_font.render(datetime.now().strftime('%H:%M'), True, (80, 80, 80))
         time_rect = time_surf.get_rect()
 
-        h_padding = 5
+        h_padding = 10
         v_padding = 4
         
         user_rect.topleft = h_padding, v_padding

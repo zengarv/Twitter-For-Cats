@@ -8,8 +8,7 @@ from ManagersAndMenus import render_fixwidth_text, BMBuilder
 # import threading
 
 class TextBox:        
-    def __init__(self, rect:pygame.Rect, font = pygame.font.SysFont('Calibri', 20)):
-        
+    def __init__(self, rect:pygame.Rect, font = pygame.font.SysFont('Calibri', 20)):      
         self.textbox = rect
         self.text_font = font
         self.text = ''
@@ -18,18 +17,30 @@ class TextBox:
         h_padding = 2
         v_padding = 4
         self.text_mask = pygame.Rect(rect.left+corner_radius+h_padding, rect.top+v_padding, rect.width-2*(corner_radius + h_padding), rect.height-2*v_padding)
-    
+        self.multiline = False
+        
+        self.no_text_surf = font.render('Type your message', True, (60, 60, 60))
+        self.no_text_surf_rect = self.no_text_surf.get_rect()
+        self.no_text_surf_rect.midleft = self.text_mask.left, self.textbox.centery
+        
     def render_text(self): 
         surf = render_fixwidth_text(self.text, self.text_font, self.text_mask.width, (255, 255, 255), linespace=7)
-        r = surf.get_rect()
-        h = min(r.height, self.text_mask.height)
-        return surf.subsurface((0, r.height - h, r.width, h))
+        self.text_rect = surf.get_rect()
+        self.multiline = self.text_mask.height < self.text_rect.height
+        h = min(self.text_rect.height, self.text_mask.height)
+        return surf.subsurface((0, self.text_rect.height - h, self.text_rect.width, h))
     
     def draw(self, screen):
         pygame.draw.rect(screen, HIGHLIGHT_COL, self.textbox, width=1, border_radius=self.textbox.height//2)    # Text Box Outer
         if self.text != '': 
-            screen.blit(self.text_surf, self.text_mask)
-
+            if self.multiline:
+                screen.blit(self.text_surf, self.text_mask)
+            else:
+                self.text_rect.midleft = self.text_mask.left, self.textbox.centery
+                screen.blit(self.text_surf, self.text_rect)
+        else:
+            screen.blit(self.no_text_surf, self.no_text_surf_rect)
+        
     def keydown(self, event):
         if event.key == 13:  
             self.last_text = self.text
@@ -103,6 +114,11 @@ class Catroom(BMBuilder):
         # Message Handling
         self.messages = []
         self.message_space = pygame.Rect(0, 100, WIDTH, HEIGHT-60)
+
+        # Scrolling
+        self.scroll_vel = 0
+        self.scroll_resistance = 1           # Lower for smoother scrolling, higher for better performance
+        self.max_scroll_vel = 15
         
     def draw(self):
         self.screen.blit(self.beta, (self.catchat_textrect.topright[0]-20, self.catchat_textrect.topright[1]))         # Beta icon
@@ -123,4 +139,17 @@ class Catroom(BMBuilder):
     def click(self, pos):
         if self.send_rect.collidepoint(pos):
             self.send_msg()
+    
+    def update(self, mouse_pos, dt):
+        if self.scroll_vel != 0 and len(self.messages) > 0:
+            self.move_by((0, self.scroll_vel))
+            self.scroll_vel = min(0, self.scroll_vel+self.scroll_resistance) if self.scroll_vel < 0 else max(0, self.scroll_vel-self.scroll_resistance)
+            self.scroll_vel = max(-self.max_scroll_vel, self.scroll_vel) if self.scroll_vel < 0 else min(self.max_scroll_vel, self.scroll_vel)
+    
+    def move_by(self, increment):
+        top_y, bottom_y = self.messages[0].rect.top, self.messages[-1].bottom
+        if top_y < self.message_space.top or bottom_y > self.message_space.bottom:
+            del_x, del_y = increment
         
+        # TODO: Implement scrolling
+        # TODO: Catmode: Toggle that converts all text to MEOW MEOW MEOW

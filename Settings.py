@@ -3,7 +3,7 @@ import pygame
 
 pygame.init()
 from BorrowedFromLeInternet import SpriteSheet
-
+import pandas as pd
 
 # User Settings
 
@@ -71,6 +71,11 @@ count_down_height_offset = -250
 
 ACCENT_COL =  (102, 106, 111)
 HIGHLIGHT_COL = 252, 192, 61
+
+# Load Stuff
+usernames = pd.read_csv('https://raw.githubusercontent.com/zengarv/Twitter-For-Cats/master/rngusernames.csv')
+tweets = pd.read_csv('https://raw.githubusercontent.com/zengarv/Twitter-For-Cats/master/tweets.csv', delimiter=' `', header=None, engine='python')
+
 # Tweets
 tweet_edge_thickness = 1
 tweet_roundedcorner_radius = 10

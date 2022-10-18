@@ -5,10 +5,6 @@ import os
 from math import sin, pi
 pygame.init()
 
-# Load Stuff
-usernames = pd.read_csv('https://raw.githubusercontent.com/zengarv/Twitter-For-Cats/master/rngusernames.csv')
-tweets = pd.read_csv('https://raw.githubusercontent.com/zengarv/Twitter-For-Cats/master/tweets.csv', delimiter=' `', header=None, engine='python')
-
 def load_screen(screen, font):
     # Make the load stuff part look good
     screen.fill(tweet_bg_col)

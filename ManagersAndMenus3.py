@@ -7,6 +7,7 @@ from ManagersAndMenus import render_fixwidth_text, BMBuilder
 from datetime import datetime
 import socket
 import threading
+from fireworks import r_c
 
 class TextBox:        
     def __init__(self, rect:pygame.Rect, font = pygame.font.SysFont('Calibri', 20)):      
@@ -60,14 +61,14 @@ class TextBox:
             self.text_surf = self.render_text()
 
 class Message:
-    def __init__(self, text, top, user='You') -> None:
+    def __init__(self, text, top, user='You', user_col=(100, 240, 80)) -> None:
         self.text = text
         self.user = user
         
         # Drawing the surface of the message      
         text_surf = render_fixwidth_text(text, message_font, WIDTH-10-20, (230, 230, 230), linespace=5)
         text_rect = text_surf.get_rect()
-        user_surf = message_font.render(user, True, (100, 240, 80))
+        user_surf = message_font.render(user, True, user_col)
         user_rect = user_surf.get_rect()
         time_surf = time_font.render(datetime.now().strftime('%H:%M'), True, (80, 80, 80))
         time_rect = time_surf.get_rect()
@@ -94,11 +95,10 @@ class Message:
         
     def draw(self, screen):
         screen.blit(self.surf, self.rect)
-        
+
 class Catroom(BMBuilder):
     def __init__(self, screen, pos):
         super().__init__(screen, pos)
-
         
         self.strikethrough_surf = pygame.transform.smoothscale(pygame.image.load(r'images\strikethrough.png'), (1773//10.5, 245//10.5))
         self.strikethrough_rect = self.strikethrough_surf.get_rect()
@@ -127,80 +127,110 @@ class Catroom(BMBuilder):
         self.max_scroll_vel = 15
         
         # Messaging - Socket Stuff
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect(ADDR)
+        self.connection_established = True
         
-        self.reciever = threading.Thread(target=self.recieve)
-        self.reciever.start()
+        try:
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket.connect(ADDR)
+            
+            self.reciever = threading.Thread(target=self.recieve)
+            self.reciever.start()
+            
+            self.users = {}  # Key: addr [str], Value: (username, color)
+        except:
+            self.connection_established = False
+            self.conn_lost_surf = pygame.transform.smoothscale(pygame.image.load(r'images\icons\connectionlost.png'), (240, 240))
+            self.conn_lost_rect = self.conn_lost_surf.get_rect()
+            self.conn_lost_rect.center = WIDTH/2, HEIGHT/2
+            self.conn_lost_text = render_fixwidth_text("Connection to the server could not be established. Restart the app to attempt a reconnection", pygame.font.SysFont('Calibri', 30), 550, (230, 230, 230), linespace=7)
+            self.clt_rect = self.conn_lost_text.get_rect()
+            self.clt_rect.midtop = WIDTH/2, self.conn_lost_rect.bottom + 20
         
     def draw(self):
-        for message in self.messages:
-            if self.message_space.contains(message.rect):
-                message.draw(self.screen)
+        if self.connection_established:
+            for message in self.messages:
+                if self.message_space.contains(message.rect):
+                    message.draw(self.screen)
+            
+            self.textbox.draw(self.screen)
+            
+            self.screen.blit(self.beta, (self.catchat_textrect.topright[0]-20, self.catchat_textrect.topright[1]))         # Beta icon
+            self.screen.blit(self.send_icon, self.send_rect)                                                               # Send Button
         
-        self.textbox.draw(self.screen)
-        
-        self.screen.blit(self.beta, (self.catchat_textrect.topright[0]-20, self.catchat_textrect.topright[1]))         # Beta icon
-        self.screen.blit(self.send_icon, self.send_rect)                                                               # Send Button
-        
+        else:
+            self.screen.blit(self.conn_lost_surf, self.conn_lost_rect)
+            self.screen.blit(self.conn_lost_text, self.clt_rect)
         
     def keydown(self, event):
-        if self.textbox.keydown(event):
-            self.send_msg()
+        if self.connection_established:
+            if self.textbox.keydown(event):
+                self.send_msg()
     
     def new_msg(self, msg, user='You'):
-        self.messages.append(Message(msg, self.message_space.top if len(self.messages) == 0 else self.messages[-1].rect.bottom, user=user))
-        
+        if self.connection_established:
+            if user == 'You':
+                self.messages.append(Message(msg, self.message_space.top if len(self.messages) == 0 else self.messages[-1].rect.bottom, user=user))
+            else:
+                addr = user
+                if addr not in self.users:
+                    self.users[addr] = (random.choice([usernames.at[random.randint(0, len(usernames.index)-1), 'Handles'], usernames.at[random.randint(0, len(usernames.index)-1), 'Adj'] + usernames.at[random.randint(0, len(usernames.index)-1), 'Obj']]), r_c())
+                self.messages.append(Message(msg, self.message_space.top if len(self.messages) == 0 else self.messages[-1].rect.bottom, *self.users[addr]))
+            
         
     def send_msg(self):
-        self.new_msg(self.textbox.last_text)
-        self.send_to_server(self.textbox.last_text)
+        if self.connection_established:
+            self.new_msg(self.textbox.last_text)
+            self.send_to_server(self.textbox.last_text)
     
     def send_to_server(self, msg):
-        msg = self.textbox.last_text
-        message = msg.encode(FORMAT)
-        msg_length = len(message)
-        send_length = str(msg_length).encode(FORMAT)
-        send_length += b' ' * (HEADER - len(send_length))
-        self.socket.send(send_length)
-        self.socket.send(message) 
+        if self.connection_established:
+            message = msg.encode(FORMAT)
+            msg_length = len(message)
+            send_length = str(msg_length).encode(FORMAT)
+            send_length += b' ' * (HEADER - len(send_length))
+            self.socket.send(send_length)
+            self.socket.send(message) 
     
     def click(self, pos):
-        if self.send_rect.collidepoint(pos):
-            self.send_msg()
+        if self.connection_established:
+            if self.send_rect.collidepoint(pos) and self.connection_established:
+                self.send_msg()
     
     def recieve(self):
-        recieve_msgs = True
-        while recieve_msgs:
-            msg_length = self.socket.recv(HEADER).decode(FORMAT)
-            if msg_length:
-                msg_length = int(msg_length)
-                msg = self.socket.recv(msg_length).decode(FORMAT)
-                print(f'[Message] {msg}')
-                self.new_msg(msg, 'SnekiCat')
+        if self.connection_established:
+            recieve_msgs = True
+            while recieve_msgs:
+                msg_length = self.socket.recv(HEADER).decode(FORMAT)
+                if msg_length:
+                    msg_length = int(msg_length)
+                    addr, msg = self.socket.recv(msg_length).decode(FORMAT).split(': ', maxsplit=1)
+                    self.new_msg(msg, addr)
     
     def update(self, mouse_pos, dt):
-        if self.scroll_vel != 0 and len(self.messages) > 0:
-            self.move_by((0, self.scroll_vel))
-            self.scroll_vel = min(0, self.scroll_vel+self.scroll_resistance) if self.scroll_vel < 0 else max(0, self.scroll_vel-self.scroll_resistance)
-            self.scroll_vel = max(-self.max_scroll_vel, self.scroll_vel) if self.scroll_vel < 0 else min(self.max_scroll_vel, self.scroll_vel)
+        if self.connection_established:
+            if self.scroll_vel != 0 and len(self.messages) > 0:
+                self.move_by((0, self.scroll_vel))
+                self.scroll_vel = min(0, self.scroll_vel+self.scroll_resistance) if self.scroll_vel < 0 else max(0, self.scroll_vel-self.scroll_resistance)
+                self.scroll_vel = max(-self.max_scroll_vel, self.scroll_vel) if self.scroll_vel < 0 else min(self.max_scroll_vel, self.scroll_vel)
     
     def move_by(self, increment):
-        top_y, bottom_y = self.messages[0].rect.top, self.messages[-1].rect.bottom
-        if top_y < self.message_space.top or bottom_y > self.message_space.bottom:
-            del_x, del_y = increment
-            
-            if del_y + top_y > self.message_space.top:
-                del_y = self.message_space.top - top_y
-                self.scroll_vel = 0
-            elif del_y + bottom_y < self.message_space.bottom:
-                del_y = self.message_space.bottom - bottom_y
-                self.scroll_vel = 0
-            
-            for msg in self.messages:
-                msg.rect.top += del_y
+        if self.connection_established:
+            top_y, bottom_y = self.messages[0].rect.top, self.messages[-1].rect.bottom
+            if top_y < self.message_space.top or bottom_y > self.message_space.bottom:
+                del_x, del_y = increment
+                
+                if del_y + top_y > self.message_space.top:
+                    del_y = self.message_space.top - top_y
+                    self.scroll_vel = 0
+                elif del_y + bottom_y < self.message_space.bottom:
+                    del_y = self.message_space.bottom - bottom_y
+                    self.scroll_vel = 0
+                
+                for msg in self.messages:
+                    msg.rect.top += del_y
     
     def scroll(self, s, mouse_pos):  
-        self.scroll_vel += s[1]*scroll_senstivity
+        if self.connection_established:
+            self.scroll_vel += s[1]*scroll_senstivity
                 
         # TODO: Catmode: Toggle that converts all text to MEOW MEOW MEOW

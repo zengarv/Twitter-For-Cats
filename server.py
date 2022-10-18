@@ -31,20 +31,23 @@ def handle_client(conn, addr):
             if msg == DISCONNECT_MESSAGE:
                 connected = False
                 
-            else:
+            else:   # Belt message to all other clients
                 for client_socket, client_addr in clients:
                     if client_addr != addr:
+                        msg = f'{str(client_addr[1])}: {msg}'
                         message = msg.encode(FORMAT)
                         msg_length = len(message)
                         send_length = str(msg_length).encode(FORMAT)
                         send_length += b' ' * (HEADER - len(send_length))
-                        client_socket.send(send_length)
-                        client_socket.send(message)  
+                        try:
+                            client_socket.send(send_length)
+                            client_socket.send(message)  
+                        except:
+                            print(f'[DEBUG]: {send_length}, {msg}')
                     
                 print(f'[Message] Sent to all clients')    
                     
             print(f"[{addr}] {msg}")
-            # conn.send("Msg received".encode(FORMAT))
 
     conn.close()
 

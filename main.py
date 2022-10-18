@@ -75,7 +75,6 @@ while run:
         elif event.type == pygame.KEYDOWN:
             if event.key == 27:      # Esc key
                 run = False
-                shutdown()
                 
             elif event.key == 32 and BM.selected_menu_index != 3:    # Long Boi   # Disables missile systems in chat (the cats are friendly to each other)
                 paw.keydown(mouse_pos)
@@ -125,7 +124,8 @@ while run:
     pygame.display.update()
     clock.tick(FPS)
         
-    
 pygame.quit()
+shutdown()
+exit()
 
 # End of Sauce, Pass the Chips   

@@ -171,8 +171,10 @@ class Catroom(BMBuilder):
             if user == 'You':
                 self.messages.append(Message(msg, self.message_space.top if len(self.messages) == 0 else self.messages[-1].rect.bottom, user=user))
             else:
+                # Assign the new user a color and a username
                 addr = user
                 if addr not in self.users:
+                    # Usernames are alloted randomly since kets don't need recognition (not because Garv was too lazy to implement it properly)
                     self.users[addr] = (random.choice([usernames.at[random.randint(0, len(usernames.index)-1), 'Handles'], usernames.at[random.randint(0, len(usernames.index)-1), 'Adj'] + usernames.at[random.randint(0, len(usernames.index)-1), 'Obj']]), r_c())
                 self.messages.append(Message(msg, self.message_space.top if len(self.messages) == 0 else self.messages[-1].rect.bottom, *self.users[addr]))
             

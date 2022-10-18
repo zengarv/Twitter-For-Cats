@@ -1,4 +1,3 @@
-from email import message
 import pygame, random
 from Settings import *
 import os
@@ -6,7 +5,7 @@ from math import sin, pi, cos
 pygame.init()
 from ManagersAndMenus import render_fixwidth_text, BMBuilder
 from datetime import datetime
-# import socket
+import socket
 # import threading
 
 class TextBox:        
@@ -127,6 +126,10 @@ class Catroom(BMBuilder):
         self.scroll_resistance = 1           # Lower for smoother scrolling, higher for better performance
         self.max_scroll_vel = 15
         
+        # Messaging - Socket Stuff
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client.connect(ADDR)
+        
     def draw(self):
         for message in self.messages:
             if self.message_space.contains(message.rect):
@@ -144,7 +147,14 @@ class Catroom(BMBuilder):
     
     def send_msg(self):
         self.messages.append(Message(self.textbox.last_text, self.message_space.top if len(self.messages) == 0 else self.messages[-1].rect.bottom))
-    
+        msg = self.textbox.last_text
+        message = msg.encode(FORMAT)
+        msg_length = len(message)
+        send_length = str(msg_length).encode(FORMAT)
+        send_length += b' ' * (HEADER - len(send_length))
+        self.client.send(send_length)
+        self.client.send(message)        
+        
     def click(self, pos):
         if self.send_rect.collidepoint(pos):
             self.send_msg()

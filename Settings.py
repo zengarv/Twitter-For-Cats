@@ -1,5 +1,6 @@
 from pygame import mixer
 import pygame
+
 pygame.init()
 from BorrowedFromLeInternet import SpriteSheet
 
@@ -96,3 +97,9 @@ pfp_pos = (20, 20)
 message_font = pygame.font.SysFont('Calibri', 20)
 time_font = pygame.font.SysFont('Calibri', 14)
 
+HEADER = 16
+PORT = 6969
+FORMAT = 'utf-8'
+SERVER = '127.0.0.1'
+DISCONNECT_MESSAGE = '!DISCONNECT'
+ADDR = (SERVER, PORT)

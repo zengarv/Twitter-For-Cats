@@ -17,6 +17,8 @@ DISCONNECT_MESSAGE = "!DISCONNECT"
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
 
+clients = []
+
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION]: {addr} connected.")
 
@@ -28,7 +30,19 @@ def handle_client(conn, addr):
             msg = conn.recv(msg_length).decode(FORMAT)
             if msg == DISCONNECT_MESSAGE:
                 connected = False
-
+                
+            else:
+                for client_socket, client_addr in clients:
+                    if client_addr != addr:
+                        message = msg.encode(FORMAT)
+                        msg_length = len(message)
+                        send_length = str(msg_length).encode(FORMAT)
+                        send_length += b' ' * (HEADER - len(send_length))
+                        client_socket.send(send_length)
+                        client_socket.send(message)  
+                    
+                print(f'[Message] Sent to all clients')    
+                    
             print(f"[{addr}] {msg}")
             # conn.send("Msg received".encode(FORMAT))
 
@@ -39,6 +53,7 @@ def start():
     print(f"[LISTENING]: Server is listening on {SERVER}")
     while True:
         conn, addr = server.accept()
+        clients.append((conn, addr))
         thread = threading.Thread(target=handle_client, args=(conn, addr))
         thread.start()
         print(f"[ACTIVE CONNECTIONS]: {threading.active_count() - 1}")

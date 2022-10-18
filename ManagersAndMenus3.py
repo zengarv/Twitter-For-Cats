@@ -6,7 +6,7 @@ pygame.init()
 from ManagersAndMenus import render_fixwidth_text, BMBuilder
 from datetime import datetime
 import socket
-# import threading
+import threading
 
 class TextBox:        
     def __init__(self, rect:pygame.Rect, font = pygame.font.SysFont('Calibri', 20)):      
@@ -127,8 +127,11 @@ class Catroom(BMBuilder):
         self.max_scroll_vel = 15
         
         # Messaging - Socket Stuff
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client.connect(ADDR)
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.connect(ADDR)
+        
+        self.reciever = threading.Thread(target=self.recieve)
+        self.reciever.start()
         
     def draw(self):
         for message in self.messages:
@@ -145,19 +148,36 @@ class Catroom(BMBuilder):
         if self.textbox.keydown(event):
             self.send_msg()
     
+    def new_msg(self, msg, user='You'):
+        self.messages.append(Message(msg, self.message_space.top if len(self.messages) == 0 else self.messages[-1].rect.bottom, user=user))
+        
+        
     def send_msg(self):
-        self.messages.append(Message(self.textbox.last_text, self.message_space.top if len(self.messages) == 0 else self.messages[-1].rect.bottom))
+        self.new_msg(self.textbox.last_text)
+        self.send_to_server(self.textbox.last_text)
+    
+    def send_to_server(self, msg):
         msg = self.textbox.last_text
         message = msg.encode(FORMAT)
         msg_length = len(message)
         send_length = str(msg_length).encode(FORMAT)
         send_length += b' ' * (HEADER - len(send_length))
-        self.client.send(send_length)
-        self.client.send(message)        
-        
+        self.socket.send(send_length)
+        self.socket.send(message) 
+    
     def click(self, pos):
         if self.send_rect.collidepoint(pos):
             self.send_msg()
+    
+    def recieve(self):
+        recieve_msgs = True
+        while recieve_msgs:
+            msg_length = self.socket.recv(HEADER).decode(FORMAT)
+            if msg_length:
+                msg_length = int(msg_length)
+                msg = self.socket.recv(msg_length).decode(FORMAT)
+                print(f'[Message] {msg}')
+                self.new_msg(msg, 'SnekiCat')
     
     def update(self, mouse_pos, dt):
         if self.scroll_vel != 0 and len(self.messages) > 0:

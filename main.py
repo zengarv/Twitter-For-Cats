@@ -32,6 +32,9 @@ BOMB.convert_alpha()
 # This is the main thing
 paw = Paw(paw_cursor, screen)
 
+def shutdown():
+    BM.menus[3].send_to_server(DISCONNECT_MESSAGE)
+
 run = True
 fireworks = []
 dt = 1/FPS
@@ -70,9 +73,10 @@ while run:
             BM.scroll((event.x, event.y), mouse_pos) 
              
         elif event.type == pygame.KEYDOWN:
-            if event.key == 27:    
+            if event.key == 27:      # Esc key
                 run = False
-
+                shutdown()
+                
             elif event.key == 32 and BM.selected_menu_index != 3:    # Long Boi   # Disables missile systems in chat (the cats are friendly to each other)
                 paw.keydown(mouse_pos)
             

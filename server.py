@@ -37,7 +37,7 @@ def handle_client(conn, addr):
                 for client_socket, client_addr in clients:
                     if client_addr != addr:
                         # Fix weird bug: client addr has all client addresses
-                        msg = f'{str(client_addr[1])}: {msg}'
+                        msg = f'{str(addr)}: {msg}'
                         print(f'[Message]: {msg}')
                         send_to_client(msg, client_socket)
                     

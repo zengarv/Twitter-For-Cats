@@ -223,8 +223,7 @@ class Catroom(BMBuilder):
                     msg_length = int(msg_length)
                     addr, msg = self.socket.recv(msg_length).decode(FORMAT).split(':', maxsplit=1)
                     self.new_msg(msg, addr)
-                    addr = msg = ''
-                    print(self.users)
+                    print(f'{addr=}, {msg=}')
     
     def update(self, mouse_pos, dt):
         if self.connection_established:

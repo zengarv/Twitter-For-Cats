@@ -137,6 +137,7 @@ class Catroom(BMBuilder):
             self.reciever.start()
             
             self.users = {}  # Key: addr [str], Value: (username, color)
+            
         except:
             self.connection_established = False
             self.conn_lost_surf = pygame.transform.smoothscale(pygame.image.load(r'images\icons\connectionlost.png'), (240, 240))
@@ -253,3 +254,4 @@ class Catroom(BMBuilder):
             self.scroll_vel += s[1]*scroll_senstivity
                 
         # TODO: Catmode: Toggle that converts all text to MEOW MEOW MEOW
+        # TODO: replace addr with username, send messages with username prefix (from client side)

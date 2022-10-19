@@ -127,28 +127,25 @@ class Catroom(BMBuilder):
         self.max_scroll_vel = 15
         
         # Messaging - Socket Stuff
-        self.connection_established = True
+        self.connection_established = False
         
-        try:
-            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.socket.connect(ADDR)
-            
-            self.reciever = threading.Thread(target=self.recieve)
-            self.reciever.start()
-            
-            self.users = {}  # Key: addr [str], Value: (username, color)
-            
-        except:
-            self.connection_established = False
-            self.conn_lost_surf = pygame.transform.smoothscale(pygame.image.load(r'images\icons\connectionlost.png'), (240, 240))
-            self.conn_lost_rect = self.conn_lost_surf.get_rect()
-            self.conn_lost_rect.center = WIDTH/2, HEIGHT/2
-            self.conn_lost_text = render_fixwidth_text("Connection to the server could not be established. Type '!reconnect' to attempt a reconnection.", pygame.font.SysFont('Calibri', 30), 550, (230, 230, 230), linespace=7)
-            self.clt_rect = self.conn_lost_text.get_rect()
-            self.clt_rect.midtop = WIDTH/2, self.conn_lost_rect.bottom + 20
+        self.conn_lost_surf = pygame.transform.smoothscale(pygame.image.load(r'images\icons\connectionlost.png'), (240, 240))
+        self.conn_lost_rect = self.conn_lost_surf.get_rect()
+        self.conn_lost_rect.center = WIDTH/2, HEIGHT/2
+        self.conn_lost_text = render_fixwidth_text("Connection to the server could not be established. Type '!reconnect' to attempt a reconnection.", pygame.font.SysFont('Calibri', 30), 550, (230, 230, 230), linespace=7)
+        self.clt_rect = self.conn_lost_text.get_rect()
+        self.clt_rect.midtop = WIDTH/2, self.conn_lost_rect.bottom + 20
+        
+        self.attempt_connection()
     
+        self.username_surf = pygame.font.SysFont('Avant Garde', 24).render(f'{self.username}', True, (100, 240, 80))
+        self.username_rect = self.username_surf.get_rect()
+        self.username_rect.topright = WIDTH-10, 75
+        self.username_box = self.username_rect.inflate(12, 6)
+        
     def attempt_connection(self):
         if not self.connection_established:
+            print("[CONNECTING]: Attempting connection to server...")
             try:
                 self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.socket.connect(ADDR)
@@ -156,8 +153,10 @@ class Catroom(BMBuilder):
                 self.reciever = threading.Thread(target=self.recieve)
                 self.reciever.start()
                 
-                self.users = {}  # Key: addr [str], Value: (username, color)
+                self.users = {}  # Key: username [str], Value: color
                 self.connection_established = True
+                self.username = random.choice([usernames.at[random.randint(0, len(usernames.index)-1), 'Handles'], usernames.at[random.randint(0, len(usernames.index)-1), 'Adj'] + usernames.at[random.randint(0, len(usernames.index)-1), 'Obj']])
+                
             except:
                 print("[DEBUG]: Couldn't communicate with the server")
     
@@ -166,6 +165,8 @@ class Catroom(BMBuilder):
             for message in self.messages:
                 if self.message_space.contains(message.rect):
                     message.draw(self.screen)
+            self.screen.blit(self.username_surf, self.username_rect)
+            pygame.draw.rect(self.screen, (230, 230, 230), self.username_box, 1, 6)
         
         else:
             self.screen.blit(self.conn_lost_surf, self.conn_lost_rect)
@@ -186,11 +187,11 @@ class Catroom(BMBuilder):
                 self.messages.append(Message(msg, self.message_space.top if len(self.messages) == 0 else self.messages[-1].rect.bottom, user=user))
             else:
                 # Assign the new user a color and a username
-                addr = user
-                if addr not in self.users:
+                username = user
+                if username not in self.users:
                     # Usernames are alloted randomly since kets don't need recognition (not because Garv was too lazy to implement it properly)
-                    self.users[addr] = (random.choice([usernames.at[random.randint(0, len(usernames.index)-1), 'Handles'], usernames.at[random.randint(0, len(usernames.index)-1), 'Adj'] + usernames.at[random.randint(0, len(usernames.index)-1), 'Obj']]), r_c())
-                self.messages.append(Message(msg, self.message_space.top if len(self.messages) == 0 else self.messages[-1].rect.bottom, *self.users[addr]))
+                    self.users[username] = r_c()
+                self.messages.append(Message(msg, self.message_space.top if len(self.messages) == 0 else self.messages[-1].rect.bottom, username, self.users[username]))
             self.scroll_vel = -100
         
     def send_msg(self):
@@ -203,6 +204,7 @@ class Catroom(BMBuilder):
     
     def send_to_server(self, msg):
         if self.connection_established:
+            msg = f'{self.username}: {msg}'
             message = msg.encode(FORMAT)
             msg_length = len(message)
             send_length = str(msg_length).encode(FORMAT)
@@ -222,9 +224,9 @@ class Catroom(BMBuilder):
                 msg_length = self.socket.recv(HEADER).decode(FORMAT)
                 if msg_length:
                     msg_length = int(msg_length)
-                    addr, msg = self.socket.recv(msg_length).decode(FORMAT).split(':', maxsplit=1)
-                    self.new_msg(msg, addr)
-                    print(f'{addr=}, {msg=}')
+                    uesrname, msg = self.socket.recv(msg_length).decode(FORMAT).split(':', maxsplit=1)
+                    self.new_msg(msg, uesrname)
+                    # print(f'{uesrname=}, {msg=}')
     
     def update(self, mouse_pos, dt):
         if self.connection_established:

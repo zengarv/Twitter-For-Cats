@@ -29,14 +29,13 @@ def handle_client(conn, addr):
         if msg_length:
             msg_length = int(msg_length)
             msg = conn.recv(msg_length).decode(FORMAT)
-            if msg == DISCONNECT_MESSAGE:
+            if msg.split(': ', maxsplit=1)[1] == DISCONNECT_MESSAGE:
                 connected = False
                 
             else:   # Belt message to all other clients
                 # print(f'[DEBUG]: Client Addr: {[c[1] for a, c in clients]}')
                 for client_socket, client_addr in clients:
                     if client_addr != addr:
-                        msg = f'{str(addr)}: {msg}'
                         # print(f'[Message]: {msg}')
                         send_to_client(msg, client_socket)
                     

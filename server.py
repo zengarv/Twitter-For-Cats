@@ -36,7 +36,6 @@ def handle_client(conn, addr):
                 # print(f'[DEBUG]: Client Addr: {[c[1] for a, c in clients]}')
                 for client_socket, client_addr in clients:
                     if client_addr != addr:
-                        # print(f'[Message]: {msg}')
                         send_to_client(msg, client_socket)
                     
                 # print(f'[Message] Sent to all clients')    

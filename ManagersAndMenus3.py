@@ -142,27 +142,40 @@ class Catroom(BMBuilder):
             self.conn_lost_surf = pygame.transform.smoothscale(pygame.image.load(r'images\icons\connectionlost.png'), (240, 240))
             self.conn_lost_rect = self.conn_lost_surf.get_rect()
             self.conn_lost_rect.center = WIDTH/2, HEIGHT/2
-            self.conn_lost_text = render_fixwidth_text("Connection to the server could not be established. Restart the app to attempt a reconnection", pygame.font.SysFont('Calibri', 30), 550, (230, 230, 230), linespace=7)
+            self.conn_lost_text = render_fixwidth_text("Connection to the server could not be established. Type '!reconnect' to attempt a reconnection.", pygame.font.SysFont('Calibri', 30), 550, (230, 230, 230), linespace=7)
             self.clt_rect = self.conn_lost_text.get_rect()
             self.clt_rect.midtop = WIDTH/2, self.conn_lost_rect.bottom + 20
-        
+    
+    def attempt_connection(self):
+        if not self.connection_established:
+            try:
+                self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.socket.connect(ADDR)
+                
+                self.reciever = threading.Thread(target=self.recieve)
+                self.reciever.start()
+                
+                self.users = {}  # Key: addr [str], Value: (username, color)
+                self.connection_established = True
+            except:
+                print("[DEBUG]: Couldn't communicate with the server")
+    
     def draw(self):
         if self.connection_established:
             for message in self.messages:
                 if self.message_space.contains(message.rect):
                     message.draw(self.screen)
-            
-            self.textbox.draw(self.screen)
-            
-            self.screen.blit(self.beta, (self.catchat_textrect.topright[0]-20, self.catchat_textrect.topright[1]))         # Beta icon
-            self.screen.blit(self.send_icon, self.send_rect)                                                               # Send Button
         
         else:
             self.screen.blit(self.conn_lost_surf, self.conn_lost_rect)
             self.screen.blit(self.conn_lost_text, self.clt_rect)
         
+        self.screen.blit(self.beta, (self.catchat_textrect.topright[0]-20, self.catchat_textrect.topright[1]))         # Beta icon
+        self.screen.blit(self.send_icon, self.send_rect)                                                               # Send Button
+        self.textbox.draw(self.screen)
+        
     def keydown(self, event):
-        if self.connection_established:
+        # if self.connection_established:
             if self.textbox.keydown(event):
                 self.send_msg()
     
@@ -177,12 +190,15 @@ class Catroom(BMBuilder):
                     # Usernames are alloted randomly since kets don't need recognition (not because Garv was too lazy to implement it properly)
                     self.users[addr] = (random.choice([usernames.at[random.randint(0, len(usernames.index)-1), 'Handles'], usernames.at[random.randint(0, len(usernames.index)-1), 'Adj'] + usernames.at[random.randint(0, len(usernames.index)-1), 'Obj']]), r_c())
                 self.messages.append(Message(msg, self.message_space.top if len(self.messages) == 0 else self.messages[-1].rect.bottom, *self.users[addr]))
-            
+            self.scroll_vel = -100
         
     def send_msg(self):
         if self.connection_established:
             self.new_msg(self.textbox.last_text)
             self.send_to_server(self.textbox.last_text)
+        else:
+            if self.textbox.last_text == '!reconnect':
+                self.attempt_connection()
     
     def send_to_server(self, msg):
         if self.connection_established:
@@ -200,13 +216,15 @@ class Catroom(BMBuilder):
     
     def recieve(self):
         if self.connection_established:
-            recieve_msgs = True
-            while recieve_msgs:
+            self.recieve_msgs = True
+            while self.recieve_msgs:
                 msg_length = self.socket.recv(HEADER).decode(FORMAT)
                 if msg_length:
                     msg_length = int(msg_length)
-                    addr, msg = self.socket.recv(msg_length).decode(FORMAT).split(': ', maxsplit=1)
+                    addr, msg = self.socket.recv(msg_length).decode(FORMAT).split(':', maxsplit=1)
                     self.new_msg(msg, addr)
+                    addr = msg = ''
+                    print(self.users)
     
     def update(self, mouse_pos, dt):
         if self.connection_established:

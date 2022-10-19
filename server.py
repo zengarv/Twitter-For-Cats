@@ -4,6 +4,7 @@ It's not original code but it is hand typed (no it's not)
 """
 
 
+from http import client
 import socket 
 import threading
 
@@ -32,24 +33,31 @@ def handle_client(conn, addr):
                 connected = False
                 
             else:   # Belt message to all other clients
+                print(f'[DEBUG]: Client Addr: {[c[1] for a, c in clients]}')
                 for client_socket, client_addr in clients:
                     if client_addr != addr:
+                        # Fix weird bug: client addr has all client addresses
                         msg = f'{str(client_addr[1])}: {msg}'
-                        message = msg.encode(FORMAT)
-                        msg_length = len(message)
-                        send_length = str(msg_length).encode(FORMAT)
-                        send_length += b' ' * (HEADER - len(send_length))
-                        try:
-                            client_socket.send(send_length)
-                            client_socket.send(message)  
-                        except:
-                            print(f'[DEBUG]: {send_length}, {msg}')
+                        print(f'[Message]: {msg}')
+                        send_to_client(msg, client_socket)
                     
                 print(f'[Message] Sent to all clients')    
                     
             print(f"[{addr}] {msg}")
 
     conn.close()
+    clients.remove((conn, addr))
+
+def send_to_client(msg, client_socket):
+    message = msg.encode(FORMAT)
+    msg_length = len(message)
+    send_length = str(msg_length).encode(FORMAT)
+    send_length = send_length + b' ' * (HEADER - len(send_length))
+    try:
+        client_socket.send(send_length)
+        client_socket.send(message)  
+    except:
+        print(f'[DEBUG]: {send_length=}, {msg=}')
 
 def start():
     server.listen()

@@ -34,6 +34,7 @@ paw = Paw(paw_cursor, screen)
 
 def shutdown():
     BM.menus[3].send_to_server(DISCONNECT_MESSAGE)
+    BM.menus[3].recieve_msgs = False
 
 run = True
 fireworks = []
@@ -126,6 +127,5 @@ while run:
         
 pygame.quit()
 shutdown()
-exit()
 
 # End of Sauce, Pass the Chips   

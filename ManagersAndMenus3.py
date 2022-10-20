@@ -1,3 +1,4 @@
+from multiprocessing import connection
 import pygame, random
 from Settings import *
 import os
@@ -149,16 +150,20 @@ class Catroom(BMBuilder):
             try:
                 self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.socket.connect(ADDR)
+                print(f'[CONNECTION]: Connection Successful')
                 
+                self.recieve_msgs = True
                 self.reciever = threading.Thread(target=self.recieve)
                 self.reciever.start()
                 
                 self.users = {}  # Key: username [str], Value: color
-                self.connection_established = True
                 self.username = random.choice([usernames.at[random.randint(0, len(usernames.index)-1), 'Handles'], usernames.at[random.randint(0, len(usernames.index)-1), 'Adj'] + usernames.at[random.randint(0, len(usernames.index)-1), 'Obj']])
                 
-            except:
-                print("[DEBUG]: Couldn't communicate with the server")
+                self.connection_established = True
+                
+            except socket.error as exc:
+                print(f"[DEBUG]: Couldn't connect with server, \n[Error]: {exc}")
+        
     
     def draw(self):
         if self.connection_established:
@@ -200,6 +205,7 @@ class Catroom(BMBuilder):
             self.send_to_server(self.textbox.last_text)
         else:
             if self.textbox.last_text == '!reconnect':
+                print("[CONNECTION]: Reattempting Connection to server...")
                 self.attempt_connection()
     
     def send_to_server(self, msg):
@@ -211,6 +217,8 @@ class Catroom(BMBuilder):
             send_length += b' ' * (HEADER - len(send_length))
             self.socket.send(send_length)
             self.socket.send(message) 
+            print(f'[MESSAGE]: Sent message - {message}')
+            
     
     def click(self, pos):
         if self.connection_established:
@@ -218,15 +226,16 @@ class Catroom(BMBuilder):
                 self.send_msg()
     
     def recieve(self):
-        if self.connection_established:
-            self.recieve_msgs = True
-            while self.recieve_msgs:
-                msg_length = self.socket.recv(HEADER).decode(FORMAT)
-                if msg_length:
-                    msg_length = int(msg_length)
-                    uesrname, msg = self.socket.recv(msg_length).decode(FORMAT).split(':', maxsplit=1)
-                    self.new_msg(msg, uesrname)
-                    # print(f'{uesrname=}, {msg=}')
+        self.recieve_msgs = True
+        print(f'[CONNECTION]: Reciever Listening')
+        while self.recieve_msgs:
+            msg_length = self.socket.recv(HEADER).decode(FORMAT)
+            if msg_length:
+                msg_length = int(msg_length)
+                recieved = self.socket.recv(msg_length).decode(FORMAT).split(': ', maxsplit=1)
+                username, msg = recieved
+                self.new_msg(msg, username)
+                print(f'[MESSAGE]{username=}: {msg=}')
     
     def update(self, mouse_pos, dt):
         if self.connection_established:

@@ -1,8 +1,10 @@
 # This is for the things the thingy needs to thing properly
 import pygame
+
 from Settings import *
+
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-from ManagersAndMenus import TweetManager, load_screen, BurgerMenu
+from ManagersAndMenus import BurgerMenu, TweetManager, load_screen
 
 # Wow so cool initializing and stuff
 pygame.init()
@@ -11,11 +13,10 @@ pygame.display.set_icon(GRUMPS)
 load_screen(screen, pygame.font.Font('fonts\\chirp-regular-web.woff', 40))
 clock = pygame.time.Clock()
 
-from ManagersAndMenus2 import Piano, CountCats
-from ManagersAndMenus3 import Catroom
-from Miscellaneous import Rat, SelfDestruct, Paw
 from fireworks import *
-
+from ManagersAndMenus2 import CountCats, Piano
+from ManagersAndMenus3 import Catroom
+from Miscellaneous import Paw, Rat, SelfDestruct
 
 SD = SelfDestruct(screen)
 BM = BurgerMenu(screen, [[TweetManager(screen, (0, 80)), "Tweets", r'cats\grumps.png'], [Piano(screen, (0, 95)), "Piano", r'images\icons\piano.png'], [CountCats(screen, (0, 95)), "SleepyTime", r'images\icons\sleepycat.png'], [Catroom(screen, (0, 95)), "CatChat", r'images\icons\Catchat.png']])

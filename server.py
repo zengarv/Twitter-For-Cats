@@ -4,9 +4,9 @@ It's not original code but it is hand typed (no it's not)
 """
 
 
-from http import client
-import socket 
+import socket
 import threading
+from http import client
 
 HEADER = 16
 PORT = 6969

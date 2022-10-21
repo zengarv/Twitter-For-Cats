@@ -1,8 +1,12 @@
-import pygame, random
-import pandas as pd
-from Settings import *
 import os
-from math import sin, pi
+import random
+from math import pi, sin
+
+import pandas as pd
+import pygame
+
+from Settings import *
+
 pygame.init()
 
 def load_screen(screen, font):

@@ -1,9 +1,14 @@
-import pygame, random
-from Settings import *
 import os
-from math import sin, pi, cos
+import random
+from math import cos, pi, sin
+
+import pygame
+
+from Settings import *
+
 pygame.init()
-from ManagersAndMenus import render_fixwidth_text, BMBuilder
+from ManagersAndMenus import BMBuilder, render_fixwidth_text
+
 
 # Add going up rects (as long as key is held)
 class PianoKey:

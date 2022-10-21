@@ -1,9 +1,10 @@
-from pygame import mixer
 import pygame
+from pygame import mixer
 
 pygame.init()
-from BorrowedFromLeInternet import SpriteSheet
 import pandas as pd
+
+from BorrowedFromLeInternet import SpriteSheet
 
 # User Settings
 

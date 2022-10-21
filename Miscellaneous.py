@@ -1,8 +1,11 @@
-import pygame
-import numpy as np
-from math import sin, cos, radians, pi, atan2, degrees
 import random
+from math import atan2, cos, degrees, pi, radians, sin
+
+import numpy as np
+import pygame
+
 from Settings import *
+
 
 class Rat:
     """

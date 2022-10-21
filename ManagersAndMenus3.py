@@ -1,14 +1,19 @@
-from multiprocessing import connection
-import pygame, random
-from Settings import *
 import os
-from math import sin, pi, cos
+import random
+from multiprocessing import connection
+
+import pygame
+
+from Settings import *
+
 pygame.init()
-from ManagersAndMenus import render_fixwidth_text, BMBuilder
-from datetime import datetime
 import socket
 import threading
+from datetime import datetime
+
 from fireworks import r_c
+from ManagersAndMenus import BMBuilder, render_fixwidth_text
+
 
 class TextBox:        
     def __init__(self, rect:pygame.Rect, font = pygame.font.SysFont('Calibri', 20)):      
@@ -144,6 +149,12 @@ class Catroom(BMBuilder):
         self.username_rect.topright = WIDTH-10, 75
         self.username_box = self.username_rect.inflate(12, 6)
         
+        self.msg_recieve_sound = mixer.Sound(r'sounds/msg_recieve.wav')
+        self.msg_send_sound = mixer.Sound(r'sounds/msg_send.wav')
+        self.you_got_a_text = mixer.Sound(r'sounds/you_got_a_text.wav')
+        
+        self.focused = False
+        
     def attempt_connection(self):
         if not self.connection_established:
             print("[CONNECTING]: Attempting connection to server...")
@@ -203,6 +214,7 @@ class Catroom(BMBuilder):
         if self.connection_established:
             self.new_msg(self.textbox.last_text)
             self.send_to_server(self.textbox.last_text)
+            self.msg_send_sound.play()
         else:
             if self.textbox.last_text == '!reconnect':
                 print("[CONNECTION]: Reattempting Connection to server...")
@@ -236,6 +248,9 @@ class Catroom(BMBuilder):
                 username, msg = recieved
                 self.new_msg(msg, username)
                 print(f'[MESSAGE]{username=}: {msg=}')
+                
+                self.msg_recieve_sound.play() if self.focused else self.you_got_a_text.play()
+            
     
     def update(self, mouse_pos, dt):
         if self.connection_established:
@@ -263,6 +278,11 @@ class Catroom(BMBuilder):
     def scroll(self, s, mouse_pos):  
         if self.connection_established:
             self.scroll_vel += s[1]*scroll_senstivity
+    
+    def on_focus(self):
+        self.focused = True
+        
+    def switch_focus(self):
+        self.focused = False
                 
         # TODO: Catmode: Toggle that converts all text to MEOW MEOW MEOW
-        # TODO: replace addr with username, send messages with username prefix (from client side)

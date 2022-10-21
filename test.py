@@ -25,3 +25,10 @@ def cat_rename():
         for file in files:
             li = list(map(lambda x: x//48, list(map(int, file.strip('.png').split('_')[1:]))))
             os.rename(f'images\\cat\\{f}\\{file}', f'images\\cat\\{f}\\{li[0]} {li[1]}.png')
+
+
+with Image.open(r'images\vibin cat.gif') as im:
+    num_key_frames = im.n_frames
+    for i in range(num_key_frames):
+        im.seek(im.n_frames // num_key_frames * i)
+        im.save('{}.png'.format(i))

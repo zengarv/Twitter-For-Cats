@@ -142,6 +142,7 @@ class Catroom(BMBuilder):
         self.clt_rect = self.conn_lost_text.get_rect()
         self.clt_rect.midtop = WIDTH/2, self.conn_lost_rect.bottom + 20
         
+        self.username = 'Ket'
         self.attempt_connection()
     
         self.username_surf = pygame.font.SysFont('Avant Garde', 24).render(f'{self.username}', True, (100, 240, 80))

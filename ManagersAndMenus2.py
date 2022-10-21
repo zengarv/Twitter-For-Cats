@@ -1,10 +1,11 @@
 import os
 import random
-from math import cos, pi, sin
+from math import cos, pi, sin, floor
 
 import pygame
 
 from Settings import *
+import threading
 
 pygame.init()
 from ManagersAndMenus import BMBuilder, render_fixwidth_text
@@ -72,12 +73,6 @@ class Piano(BMBuilder):
         self.keys = []
         self.pressed_key = None
         
-        self.cat_headphones = pygame.image.load(r'sounds\cat piano\catheadphones.png')
-        self.ch_rect = self.cat_headphones.get_rect()
-        self.cat_headphones = pygame.transform.smoothscale(self.cat_headphones, (self.ch_rect.width//3, self.ch_rect.height//3))
-        self.ch_rect = self.cat_headphones.get_rect()
-        self.ch_rect.midbottom = WIDTH//2, HEIGHT
-        
         self.instructions = pygame.transform.smoothscale(pygame.image.load(r'images\catpiano guide2.png'), (862*0.58, 548*0.58))
         self.i_rect = self.instructions.get_rect()
         self.i_rect.center = WIDTH/2, 510
@@ -89,6 +84,11 @@ class Piano(BMBuilder):
         self.qm = pygame.transform.smoothscale(pygame.image.load(r'images\icons\question mark.png'), (25, 25))
         self.qm_rect = self.qm.get_rect()
         self.qm_rect.center = 50, 350
+        
+        self.vibin_cat_loaded = False
+        self.vibin_cat_index = 0
+        self.load_thread = threading.Thread(target=self.load_vibin_cat)
+        self.load_thread.start()
         
         black_keys_present = [1, 1, 0, 1, 1, 1, 0, 1, 1]
         
@@ -111,6 +111,9 @@ class Piano(BMBuilder):
                 
                 
     def draw(self):
+        if self.vibin_cat_loaded:
+            self.screen.blit(self.vibin_cat_frames[floor(self.vibin_cat_index)], self.vibin_cat_rect)
+        
         pygame.draw.rect(self.screen, (190, 100, 100), (self.topleft[0]-25, self.topleft[1]-10, 510+50, 230+40), border_radius=20)
         pygame.draw.rect(self.screen, (230, 140, 140), (self.topleft[0]-25, self.topleft[1]-10, 510+50, 230+20), border_radius=20)
         
@@ -125,8 +128,6 @@ class Piano(BMBuilder):
             
         self.screen.blit(self.qm, self.qm_rect)
 
-        
-        self.screen.blit(self.cat_headphones, self.ch_rect)
         
     def click(self, pos):
         if self.qm_rect.collidepoint(pos):
@@ -153,8 +154,19 @@ class Piano(BMBuilder):
     def update(self, mouse_pos, dt):
         for k in self.keys:
             k.update()
-
-
+        
+        for key in self.keys:
+            if key.is_keydown:
+                self.vibin_cat_index += 0.3
+                if floor(self.vibin_cat_index) == 151: self.vibin_cat_index = 0
+                break
+            
+    def load_vibin_cat(self):
+        self.vibin_cat_frames = [pygame.transform.smoothscale(pygame.image.load(f'images\\vibin cat\\{i}.png').convert_alpha(), (280*1.79, 190*1.79)) for i in range(151)]
+        self.vibin_cat_loaded = True
+        self.vibin_cat_rect = self.vibin_cat_frames[0].get_rect()
+        self.vibin_cat_rect.bottomleft = 0, HEIGHT
+        
 cat_sprites = [[[pygame.image.load(f'images\\cat\\{f}\\{i}') for i in os.listdir(f'images\\cat\\{f}')][j*3:(j+1)*3] for j in range(4)] for f in range(1, 17)]
 for cat in cat_sprites:               # 16 cats
     for anim in cat:                  # 4 animations - down, left, right, up

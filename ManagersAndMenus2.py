@@ -140,10 +140,11 @@ class Piano(BMBuilder):
                 self.pressed_key = key
                 break
     
-    def mouse_button_up(self, pos):
-        if self.pressed_key != None:
-            self.pressed_key.keyup()
-            self.pressed_key = None
+    def mouse_button_up(self, event):
+        if event.button == 1:
+            if self.pressed_key != None:
+                self.pressed_key.keyup()
+                self.pressed_key = None
     
     def keydown(self, event):
         if event.unicode in self.keybinds: self.keys[self.keybinds.index(event.unicode)].keydown()
@@ -162,6 +163,7 @@ class Piano(BMBuilder):
                 break
             
     def load_vibin_cat(self):
+        # Loads Benjamin (He's the vibin cat)
         self.vibin_cat_frames = [pygame.transform.smoothscale(pygame.image.load(f'images\\vibin cat\\{i}.png').convert_alpha(), (280*1.79, 190*1.79)) for i in range(151)]
         self.vibin_cat_loaded = True
         self.vibin_cat_rect = self.vibin_cat_frames[0].get_rect()

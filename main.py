@@ -65,10 +65,10 @@ while run:
                 if grumps_icon_rect.collidepoint(event.pos): g_meow.play()
                 else:
                     BM.click(event.pos)
+            BM.mouse_button_down(event)
         
         elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button == 1:
-                BM.mouse_button_up(event.pos)
+            BM.mouse_button_up(event)
              
         elif event.type == pygame.MOUSEWHEEL:
             # If mouse goes weeeeeee, do more stuff

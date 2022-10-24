@@ -27,8 +27,9 @@ def cat_rename():
             os.rename(f'images\\cat\\{f}\\{file}', f'images\\cat\\{f}\\{li[0]} {li[1]}.png')
 
 
-with Image.open(r'images\vibin cat.gif') as im:
-    num_key_frames = im.n_frames
-    for i in range(num_key_frames):
-        im.seek(im.n_frames // num_key_frames * i)
-        im.save('{}.png'.format(i))
+def extract_from_gif(path):
+    with Image.open(path) as im:
+        num_key_frames = im.n_frames
+        for i in range(num_key_frames):
+            im.seek(im.n_frames // num_key_frames * i)
+            im.save('{}.png'.format(i))

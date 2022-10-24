@@ -226,8 +226,11 @@ class BurgerMenu:
                     break
         elif not self.collapsed: self.collapse()            # Close the menu if it's not clicked on
                 
-    def mouse_button_up(self, pos):
-        self.selected_menu.mouse_button_up(pos)
+    def mouse_button_up(self, event):
+        self.selected_menu.mouse_button_up(event)
+        
+    def mouse_button_down(self, event):
+        self.selected_menu.mouse_button_down(event)
     
     def collapse(self):
         self.collapsed = not self.collapsed
@@ -276,7 +279,10 @@ class BMBuilder:
     def click(self, pos):
         pass
     
-    def mouse_button_up(self, pos):
+    def mouse_button_up(self, event):
+        pass
+    
+    def mouse_button_down(self, event):
         pass
     
     def keydown(self, event):

@@ -1,4 +1,4 @@
-# Twitter-For-Cats
+# Twitter-For-Cats (v6.9)
 > "My cat was happy even though I forgot to feed it. I thank twitter for cats."
 
 > ~ Osama Bin Laden, Former Activist
@@ -19,6 +19,7 @@ Also it's against the Terms and Conditions of the app to take offence at any twe
 
 ### (3). Piano for Cats
 Inspired from the musical events of 9/11, we have integrated a cat friendly piano so your furry friend can explore his/her/it's hidden Beethoven
+New in v3.7: Bongo cat
 
 ### (4). Sleepy Time for Cats
 Count cats as you fall sleep as pleasent music plays in the background and notifies the user when it ticks to 100.
@@ -28,7 +29,18 @@ Kill anything that moves - Mice, Ladybugs, Ants or even a laser
 
 ### (6) ICBM System
 
-### (7) Catroom for Cats
+### (7) Catroom for Cats (Humans shouldn't use it, It's against our T&C)
+
+### (8) Self Destruct Sequence
+
+### (9) Extremely smooth Burger menu (feat. burgers)
+This highly piece of innovative text lets you switch around the different pages this app has to offer
+
+### (10) It works (mostly)
+Owing to our high standards here at twitter for cats, we are proud to provide you an app that works (most of the time, unless you try to break, which is your fault and we would be coming to you with a lawsuit, since it's against our policies to try to break the app)
+
+### (11) Revolutionary Aspect Ratio
+We have revolutionized the market of digital screens by using a brand-new, never seen before aspect ratio <ratio to be inserted here> (What can I say, it's a very revolutionary app. It's also our vision: Revolution.)
 
 ## Requirements:
 - Python or something  (3.10+ ig if it doesn't run on older ones)

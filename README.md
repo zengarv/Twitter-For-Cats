@@ -6,6 +6,7 @@
 ## Vision:
 Here at Twitter for Cats we boast about having high standards of quality. 
 > In case of any bugs, we don't try to fix it. We accept them and move on
+
 and so is life. Sometimes you don't get a say in how things are. You have to learn to move on.
 
 ## Key Features:

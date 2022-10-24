@@ -90,6 +90,15 @@ class Piano(BMBuilder):
         self.load_thread = threading.Thread(target=self.load_vibin_cat)
         self.load_thread.start()
         
+        self.bongo_cat_i = 0
+        self.bongo_cat = [pygame.image.load(f'images\\bongo cat\\{i}.png') for i in range(1, 5)]
+        w, h = self.bongo_cat[0].get_size()
+        self.bongo_cat = [pygame.transform.smoothscale(i, (w*0.5, h*0.5)) for i in self.bongo_cat]
+        self.bongo0 = mixer.Sound(r'images\bongo cat\bongo0.wav')
+        self.bongo1 = mixer.Sound(r'images\bongo cat\bongo1.wav')
+        self.bongo_cat_rect = self.bongo_cat[0].get_rect()
+        self.bongo_cat_rect.bottomright = WIDTH, HEIGHT
+        
         black_keys_present = [1, 1, 0, 1, 1, 1, 0, 1, 1]
         
         # Fanci Math
@@ -113,6 +122,8 @@ class Piano(BMBuilder):
     def draw(self):
         if self.vibin_cat_loaded:
             self.screen.blit(self.vibin_cat_frames[floor(self.vibin_cat_index)], self.vibin_cat_rect)
+        
+        self.screen.blit(self.bongo_cat[self.bongo_cat_i], self.bongo_cat_rect)
         
         pygame.draw.rect(self.screen, (190, 100, 100), (self.topleft[0]-25, self.topleft[1]-10, 510+50, 230+40), border_radius=20)
         pygame.draw.rect(self.screen, (230, 140, 140), (self.topleft[0]-25, self.topleft[1]-10, 510+50, 230+20), border_radius=20)
@@ -140,11 +151,26 @@ class Piano(BMBuilder):
                 self.pressed_key = key
                 break
     
+    def mouse_button_down(self, event):
+        if self.bongo_cat_rect.collidepoint(event.pos):
+            match event.button:
+                case 1: 
+                    self.bongo_cat_i += 1
+                    self.bongo0.play()
+                case 3: 
+                    self.bongo_cat_i += 2
+                    self.bongo1.play()
+                    
+            
     def mouse_button_up(self, event):
         if event.button == 1:
             if self.pressed_key != None:
                 self.pressed_key.keyup()
                 self.pressed_key = None
+        if self.bongo_cat_rect.collidepoint(event.pos):
+            match event.button:
+                case 1: self.bongo_cat_i -= 1
+                case 3: self.bongo_cat_i -= 2
     
     def keydown(self, event):
         if event.unicode in self.keybinds: self.keys[self.keybinds.index(event.unicode)].keydown()
@@ -157,7 +183,7 @@ class Piano(BMBuilder):
             k.update()
         
         for key in self.keys:
-            if key.is_keydown:
+            if self.bongo_cat_i > 0 or key.is_keydown:
                 self.vibin_cat_index += 0.3
                 if floor(self.vibin_cat_index) == 151: self.vibin_cat_index = 0
                 break

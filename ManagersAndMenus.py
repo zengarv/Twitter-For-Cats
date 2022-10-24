@@ -6,6 +6,7 @@ import pandas as pd
 import pygame
 
 from Settings import *
+import threading
 
 pygame.init()
 
@@ -349,6 +350,9 @@ class TweetManager(BMBuilder):
         self.tweet_button_visible = True
         self.tweet_button_clicked = False
         
+        self.held_tweets = [Tweet((0, 0), self.width) for _ in range(5)]
+        self.held_tweets_generating = False
+        
         self.draw_surf()
         
     def draw(self):
@@ -379,6 +383,10 @@ class TweetManager(BMBuilder):
                 self.invalidated_opinions.remove(tweet)
                 tweet.surf = pygame.surface.Surface(tweet.surf.get_size())
                 tweet.surf.fill(tweet_bg_col)
+        
+        if not self.held_tweets_generating and len(self.held_tweets) < 5:
+            self.generate_tweets_thread = threading.Thread(target=self.update_held_tweets)
+            self.generate_tweets_thread.start()
                 
         if self.scroll_vel != 0:
             self.move_by((0, self.scroll_vel))
@@ -397,7 +405,14 @@ class TweetManager(BMBuilder):
 
             
             if p < 0: self.tweet_button_visible = False
-                
+    
+    def update_held_tweets(self):
+        self.held_tweets_generating = True
+        while len(self.held_tweets) < 5:
+            self.held_tweets.append(Tweet((0, 0), self.width))
+        self.held_tweets_generating = False
+        
+    
     def generate_tweets(self):
         x, y = self.x, self.y
         while y < HEIGHT-self.topleft[1]+(self.visible_tweets[-1].rect.height if len(self.visible_tweets) else 0):
@@ -430,7 +445,9 @@ class TweetManager(BMBuilder):
         
         bottom_y = self.tweets[-1].pos[1] + self.tweets[-1].height
         if HEIGHT + 100 > bottom_y:
-            self.tweets.append(Tweet((0, bottom_y)))
+            tweet = self.held_tweets.pop()
+            tweet.move_by((0, bottom_y))
+            self.tweets.append(tweet)
         
         self.move((self.x + del_x, self.y + del_y))
     

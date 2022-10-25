@@ -28,7 +28,7 @@ reticle_col = (240, 54, 23)
 
 
 # Controls
-scroll_senstivity = 10                       # 1: Left Mouse Click   
+scroll_senstivity = 25                       # 1: Left Mouse Click   
 invalidate_opinion_button = 2                # 2: Mouse Middle Click  
 firework_button = 1                          # 3: Right Mouse Click      
 fireworks_color_offset = 50

@@ -155,10 +155,10 @@ class Piano(BMBuilder):
         if self.bongo_cat_rect.collidepoint(event.pos):
             match event.button:
                 case 1: 
-                    self.bongo_cat_i += 1
+                    self.bongo_cat_i += 1 if self.bongo_cat_i < 3 else 0
                     self.bongo0.play()
                 case 3: 
-                    self.bongo_cat_i += 2
+                    self.bongo_cat_i += 2 if self.bongo_cat_i < 2 else 0
                     self.bongo1.play()
                     
             
@@ -167,10 +167,9 @@ class Piano(BMBuilder):
             if self.pressed_key != None:
                 self.pressed_key.keyup()
                 self.pressed_key = None
-        if self.bongo_cat_rect.collidepoint(event.pos):
-            match event.button:
-                case 1: self.bongo_cat_i -= 1
-                case 3: self.bongo_cat_i -= 2
+        match event.button:
+                case 1: self.bongo_cat_i -= 1 if self.bongo_cat_i > 0 else 0
+                case 3: self.bongo_cat_i -= 2 if self.bongo_cat_i > 1 else 0
     
     def keydown(self, event):
         if event.unicode in self.keybinds: self.keys[self.keybinds.index(event.unicode)].keydown()

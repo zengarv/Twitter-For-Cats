@@ -129,7 +129,7 @@ class Catroom(BMBuilder):
         # Scrolling
         self.scroll_vel = 0
         self.scroll_resistance = 1           # Lower for smoother scrolling, higher for better performance
-        self.max_scroll_vel = 15
+        self.max_scroll_vel = 50
         
         # Messaging - Socket Stuff
         self.connection_established = False

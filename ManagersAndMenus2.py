@@ -13,6 +13,11 @@ from ManagersAndMenus import BMBuilder, render_fixwidth_text
 
 # Add going up rects (as long as key is held)
 class PianoKey:
+    wgloss = pygame.transform.flip(pygame.image.load(r'images\misc\gloss white.png'), True, False)
+    wgloss.set_alpha(50)
+    bgloss = pygame.image.load(r'images\misc\gloss.png')
+    bgloss.set_alpha(50)
+    
     def __init__(self, type, pos, key, topleft):
         self.topleft = topleft
         self.type = type
@@ -30,9 +35,11 @@ class PianoKey:
         self.keyup_surf = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
         pygame.draw.rect(self.keyup_surf, ((200, 200, 200) if type == 'white' else (10, 10, 10)), (0, 0, self.width, self.height), border_radius=8 if type == 'white' else 5)
         pygame.draw.rect(self.keyup_surf, ((255, 255, 255) if type == 'white' else (40, 40, 40)), (0, 0, self.width, self.height-15), border_radius=8 if type == 'white' else 5)
+        self.keyup_surf.blit(pygame.transform.smoothscale(self.bgloss, (self.width, self.height-15)) if type == 'white' else pygame.transform.smoothscale(self.wgloss, (self.width, self.height-15)), (0, 0))
         
         self.keydown_surf = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
         pygame.draw.rect(self.keydown_surf, ((255, 255, 255) if type == 'white' else (40, 40, 40)), (0, 0, self.width, self.height), border_radius=8 if type == 'white' else 5)
+        self.keydown_surf.blit(pygame.transform.smoothscale(self.bgloss, (self.width, self.height)) if type == 'white' else pygame.transform.smoothscale(self.wgloss, (self.width, self.height)), (0, 0))
         
         self.tiles = []
         self.tile_vel = 2

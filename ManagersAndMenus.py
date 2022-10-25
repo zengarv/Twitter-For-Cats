@@ -61,6 +61,9 @@ class Tweet:
     # pygame.draw.circle(mask, (255, 255, 255), (pfp_s//2, pfp_s//2), pfp_s//2)
     
     mask = pygame.image.load(r'images\misc\pfp mask.png')
+    gloss = pygame.image.load(r'images\misc\gloss white.png')
+    gloss.set_alpha(25)
+    
     
     def __init__(self, pos, width=WIDTH):
         self.pos = pos
@@ -82,6 +85,8 @@ class Tweet:
         self.height = 20+pfp_s+self.tweet_text_surf.get_height()
         self.surf = pygame.surface.Surface((self.width, self.height), pygame.SRCALPHA)
         self.surf.fill(tweet_bg_col)
+        
+        self.surf.blit(pygame.transform.smoothscale(self.gloss, (self.width, self.height)), (0, 0))
         
         self.surf.blit(self.tweet_text_surf, (username_pos[0], username_pos[1]+5+self.username_surf.get_height()))
         self.surf.blit(self.pfp_surf, pfp_pos)
@@ -116,6 +121,8 @@ class Tweet:
 
 
 class BurgerMenu:
+    glass = pygame.image.load(r'images\misc\glass.png')
+    glass.set_alpha(50)
     """
     https://youtu.be/TSSPDoXIPEU?t=5
     """
@@ -180,6 +187,7 @@ class BurgerMenu:
         for names, icons in zip(self.menu_names, self.icons): 
             
             menu_button_surf = pygame.Surface((self.width, self.menu_button_height), pygame.SRCALPHA)
+            menu_button_surf.blit(pygame.transform.smoothscale(self.glass, (self.width, self.menu_button_height)), (0, 0))
             menu_button_rect = menu_button_surf.get_rect()
             
             name_surf = burger_menu_font.render(names, True, burger_menu_text_col)

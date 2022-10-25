@@ -1,6 +1,5 @@
 import os
 import random
-from multiprocessing import connection
 
 import pygame
 

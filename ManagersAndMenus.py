@@ -56,23 +56,26 @@ class Tweet:
     """
     When I first wrote this only god and I understood it. Now only god does.
     """
+    # mask = pygame.surface.Surface((pfp_s, pfp_s))
+    # mask.fill((0, 0, 0))
+    # pygame.draw.circle(mask, (255, 255, 255), (pfp_s//2, pfp_s//2), pfp_s//2)
+    
+    mask = pygame.image.load(r'images\misc\pfp mask.png')
+    
     def __init__(self, pos, width=WIDTH):
         self.pos = pos
         self.alpha = 255
         self.width = width
         self.tweettext = tweets.at[random.randint(0, len(tweets.index)-1), 0]
         self.hand = random.choice([usernames.at[random.randint(0, len(usernames.index)-1), 'Handles'], usernames.at[random.randint(0, len(usernames.index)-1), 'Adj'] + usernames.at[random.randint(0, len(usernames.index)-1), 'Obj']])
-        self.cat_img = os.getcwd() + '\\cats\\' + random.choice(os.listdir(os.getcwd() + '\\cats'))
         
         self.username_surf = username_font.render(self.hand, True, username_text_col)
         self.handle_surf = handlefont.render('@' + self.hand, True, handle_text_col)
         self.tweet_text_surf = render_fixwidth_text(self.tweettext, tweetfont, width-150, col=tweet_text_col, linespace=tweet_linespace)
         
-        self.pfp_surf = pygame.image.load(self.cat_img)
+        self.pfp_surf = random.choice(cat_imgs)
         self.pfp_surf = pygame.transform.smoothscale(self.pfp_surf, (pfp_s, pfp_s))
-        self.mask = pygame.surface.Surface((pfp_s, pfp_s))
-        self.mask.fill((0, 0, 0))
-        pygame.draw.circle(self.mask, (255, 255, 255), (pfp_s//2, pfp_s//2), pfp_s//2)
+        
         self.pfp_surf.blit(self.mask, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
         self.pfp_surf.set_colorkey((0, 0, 0))
         

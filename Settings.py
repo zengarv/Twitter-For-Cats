@@ -4,6 +4,8 @@ from pygame import mixer
 pygame.init()
 import pandas as pd
 
+import os
+
 from BorrowedFromLeInternet import SpriteSheet
 
 # User Settings
@@ -50,6 +52,7 @@ impact = mixer.Sound(r'sounds\impact.wav')
 pew = mixer.Sound(r'sounds\Pew.wav')
 ab_stretch = mixer.Sound(r'sounds\angry birds slingshot stretch.wav')
 meows = [mixer.Sound(f'sounds\\meows\\m{i}.wav') for i in range(1, 9)]
+cat_imgs = [pygame.image.load(f'cats\\{file}') for file in os.listdir('cats')]
 
 burger_menu_font = pygame.font.Font('fonts\\Joynoted.ttf', 30)
 burger_menu_text_col = (240, 200, 100)

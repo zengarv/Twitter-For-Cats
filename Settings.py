@@ -16,7 +16,7 @@ FPS = 60
 
 enable_fireworks = True       # Disable to increase Performance
 
-show_FPS = True
+show_FPS = False
 fps_font = pygame.font.SysFont('Courier New', 20)
 
 

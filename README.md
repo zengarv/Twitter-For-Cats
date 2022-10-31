@@ -1,4 +1,5 @@
-# Twitter-For-Cats (v6.9)
+# ![twitterforcats](https://user-images.githubusercontent.com/56085798/198994628-bcbce57c-6e1a-4dc7-a88c-7264658932a9.png)
+
 > "My cat was happy even though I forgot to feed it. I thank twitter for cats."
 
 > ~ Osama Bin Laden, Former Activist
@@ -15,7 +16,8 @@ New in v4.20: Somewhat organised folder structure
 
 ## Key Features:
 
-### (1). Cats don't need the internet's approval + Invalidating Opinions
+### (1). Cats don't need the internet's approval + Invalidating Opinions ![catcrossbones raised](https://user-images.githubusercontent.com/56085798/198995173-c70bc7b0-799b-4c96-a76e-252cc8ca0088.png)
+
 We at twitter for cats believe in innovation (real innovation). We have made an industry-changing decision of getting rid of features like 'like' (hehe), 'retweet' and all the other crap, and replaced it with a no-nonsense, easy to press 'Invalidate Opinion' Button.
 
 Disagree with something you see? Just click on this button and watch the tweet slowly disappear into the void, never to be seen again (unless you restart the app, but this is a privacy feature. More details later).
@@ -38,10 +40,15 @@ Count cats as you fall sleep as pleasent music plays in the background and notif
 Kill anything that moves - Mice, Ladybugs, Ants or even a laser
 
 ### (6) ICBM System
+Tired of exterminating R.A.T.S by mere clicks? You're in luck as we feature a revolutionary weaponry system. The paw cursor comes with a inbuilt intercontinental ballistic missile [Hold space and release when you are locked in to the target], with a 1% chance of using the finest missile, the boeing 737.
 
 ### (7) Catroom for Cats (Humans shouldn't use it, It's against our T&C)
+Is your cat getting bored? Worry no further as Twitter for Cats comes with a state of the art messaging systems, that all literate cats with an elementary understanding of the english language can use.
+
+Boring technical details: The server and client are configured to run locally as the server hasn't been hosted anywhere, but can be run on different machines, by simply changing the IP address in the server.py and Settings.py scripts. The server isn't necessary for the app to be running, but this feature would require it (Go figure).
 
 ### (8) Self Destruct Sequence
+Just press the close button and check it out.
 
 ### (9) Extremely smooth Burger menu (feat. burgers)
 This highly piece of innovative text lets you switch around the different pages this app has to offer
@@ -52,7 +59,12 @@ Owing to our high standards here at twitter for cats, we are proud to provide yo
 ### (11) Revolutionary Aspect Ratio
 We have revolutionized the market of digital screens by using a brand-new, never seen before aspect ratio <ratio to be inserted here> (What can I say, it's a very revolutionary app. It's also our vision: Revolution.)
 
+
+
+Note: All of the functionality has been implemented with just the base libraries. No sketchy libraries were imported (The author demands for extra credit because of this)
+
 ## Requirements:
+- Computer (must be functional)
 - Python or something  (3.10+ ig if it doesn't run on older ones)
 - Pygame maybe
 - Pandas (Note: Panda must not be allergic to cat)

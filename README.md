@@ -29,11 +29,11 @@ Also it's against the Terms and Conditions of the app to take offence at any twe
 
 > ~ Also Osama Bin Laden
 
-### (3). Piano for Cats
+### (3). Piano for Cats ![piano smol](https://user-images.githubusercontent.com/56085798/199284217-e6807c10-c988-46bd-92da-a6b7a3ec0aa0.png)
 Inspired from the musical events of 9/11, we have integrated a cat friendly piano so your furry friend can explore his/her/it's hidden Beethoven
 New in v3.7: Bongo cat
 
-### (4). Sleepy Time for Cats
+### (4). Sleepy Time for Cats ![sleepycat](https://user-images.githubusercontent.com/56085798/199284367-2b84c307-42d2-4f9b-8d1e-c6a9771fd63b.png)
 Count cats as you fall sleep as pleasent music plays in the background and notifies the user when it ticks to 100.
 
 ### (5) R.A.T.S
@@ -42,7 +42,8 @@ Kill anything that moves - Mice, Ladybugs, Ants or even a laser
 ### (6) ICBM System
 Tired of exterminating R.A.T.S by mere clicks? You're in luck as we feature a revolutionary weaponry system. The paw cursor comes with a inbuilt intercontinental ballistic missile [Hold space and release when you are locked in to the target], with a 1% chance of using the finest missile, the boeing 737.
 
-### (7) Catroom for Cats (Humans shouldn't use it, It's against our T&C)
+### (7) Catroom for Cats (Humans shouldn't use it, It's against our T&C) ![Catchat smol](https://user-images.githubusercontent.com/56085798/199283813-ae253051-e7a5-46ab-8f0b-e4c9648d4e16.png)
+
 Is your cat getting bored? Worry no further as Twitter for Cats comes with a state of the art messaging systems, that all literate cats with an elementary understanding of the english language can use.
 
 Boring technical details: The server and client are configured to run locally as the server hasn't been hosted anywhere, but can be run on different machines, by simply changing the IP address in the server.py and Settings.py scripts. The server isn't necessary for the app to be running, but this feature would require it (Go figure).
@@ -51,7 +52,8 @@ Boring technical details: The server and client are configured to run locally as
 Just press the close button and check it out.
 (Note: Don't trust the cats countdown. Cats are bad at counting.)
 
-### (9) Extremely smooth Burger menu (feat. burgers)
+### (9) Extremely smooth Burger menu (feat. burgers) ![1](https://user-images.githubusercontent.com/56085798/199285606-f1093c0e-36ab-4d8b-913a-106b98724fef.png)
+
 This highly piece of innovative text lets you switch around the different pages this app has to offer
 
 ### (10) It works (mostly)

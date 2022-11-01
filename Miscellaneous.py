@@ -119,6 +119,7 @@ class SelfDestruct:
         self.WIDTH, self.HEIGHT = screen.get_size()
         
         self.caution_tape = pygame.transform.smoothscale(pygame.image.load(r'images\misc\stripes.jpeg'), (WIDTH, 200))
+        self.caution_tape.set_alpha(150)
         self.caution_tape_rect = self.caution_tape.get_rect()
         self.caution_tape_rect.midleft = WIDTH, 225
         
@@ -175,7 +176,7 @@ class SelfDestruct:
         self.surf = pygame.surface.Surface((self.WIDTH, self.HEIGHT), pygame.SRCALPHA)
         self.surf.blit(self.red_filter, (0, 0))
         
-        self.count_down = Count_Down_font.render(self.count, True, (255, 255, 255))
+        self.count_down = Count_Down_font.render(self.count, True, (240, 80, 80))
         self.self_destructing_in = Count_Down_fontS.render("Self Destructing in:", True, (255, 255, 255))
         
         

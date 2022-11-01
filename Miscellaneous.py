@@ -105,7 +105,6 @@ class Rat:
         
         self.t = 0
 
-
 class SelfDestruct:
     """
     My homework excuse (it self destructed)
@@ -118,6 +117,11 @@ class SelfDestruct:
         self.screen = screen
         self.initiated = False
         self.WIDTH, self.HEIGHT = screen.get_size()
+        
+        self.caution_tape = pygame.transform.smoothscale(pygame.image.load(r'images\misc\stripes.jpeg'), (WIDTH, 200))
+        self.caution_tape.set_alpha(150)
+        self.caution_tape_rect = self.caution_tape.get_rect()
+        self.caution_tape_rect.midleft = WIDTH, 225
         
         self.red_filter = pygame.surface.Surface((self.WIDTH, self.HEIGHT), pygame.SRCALPHA)
         self.red_filter.fill((240, 40, 22))
@@ -141,7 +145,10 @@ class SelfDestruct:
     
     def update(self, dt):
         self.t += dt
-        if self.initiated and self.t <= self.end_t: self.bombcat_rect.bottomright = self.bc_brx, max(-(sin(pi/2*(self.t-self.start_t)/(self.cat_anim_duration)))*self.bombcat_size[1] + self.bc_bry_i, self.bc_bry_f)
+        if self.initiated and self.t <= self.end_t: 
+            self.bombcat_rect.bottomright = self.bc_brx, max(-(sin(pi/2*(self.t-self.start_t)/(self.cat_anim_duration)))*self.bombcat_size[1] + self.bc_bry_i, self.bc_bry_f)
+            self.caution_tape_rect.left = WIDTH*(cos(pi/2 * (self.t-self.start_t)/(self.cat_anim_duration)))
+        else: self.caution_tape_rect.left = 0
         
         if self.initiated and self.update_count_at <= self.t:
             if self.update_count(): return True
@@ -169,10 +176,8 @@ class SelfDestruct:
         self.surf = pygame.surface.Surface((self.WIDTH, self.HEIGHT), pygame.SRCALPHA)
         self.surf.blit(self.red_filter, (0, 0))
         
-        count_down = Count_Down_font.render(self.count, True, (255, 255, 255))
-        self.surf.blit(count_down, ((WIDTH - count_down.get_width())//2, (HEIGHT - count_down.get_height())//2 + count_down_height_offset))
-        self_destructing_in = Count_Down_fontS.render("Self Destructing in:", True, (255, 255, 255))
-        self.surf.blit(self_destructing_in, ((WIDTH - self_destructing_in.get_width())//2, (HEIGHT - count_down.get_height() - self_destructing_in.get_height() - 50)//2 + count_down_height_offset))
+        self.count_down = Count_Down_font.render(self.count, True, (240, 80, 80))
+        self.self_destructing_in = Count_Down_fontS.render("Self Destructing in:", True, (255, 255, 255))
         
         
     def draw(self):
@@ -181,6 +186,11 @@ class SelfDestruct:
             self.o = min(255, self.o*1.075)
             self.surf.set_alpha(self.o)
             self.screen.blit(self.surf, (0, 0))
+
+            self.screen.blit(self.caution_tape, self.caution_tape_rect)
+            
+            self.screen.blit(self.count_down, ((WIDTH - self.count_down.get_width())//2 + self.caution_tape_rect.left, (HEIGHT - self.count_down.get_height())//2 + count_down_height_offset))
+            self.screen.blit(self.self_destructing_in, ((WIDTH - self.self_destructing_in.get_width())//2 + self.caution_tape_rect.left, (HEIGHT - self.count_down.get_height() - self.self_destructing_in.get_height() - 50)//2 + count_down_height_offset))
 
             self.screen.blit(self.cat_bomb, self.bombcat_rect)
 

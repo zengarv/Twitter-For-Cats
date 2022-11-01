@@ -69,7 +69,7 @@ fade_in_factor = 1.1    # Default: 1.075
 time_between_counts = 1  # (in seconds)  Default: 1
 
 Count_Down_font = pygame.font.SysFont('Arial', 100)
-Count_Down_fontS = pygame.font.SysFont('Arial', 60)
+Count_Down_fontS = pygame.font.Font(r'fonts\bomb.ttf', 60)
 t_num = '---'
 count_down_height_offset = -250
 

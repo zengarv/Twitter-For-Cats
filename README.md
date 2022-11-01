@@ -23,7 +23,7 @@ We at twitter for cats believe in innovation (real innovation). We have made an 
 Disagree with something you see? Just click on this button and watch the tweet slowly disappear into the void, never to be seen again (unless you restart the app, but this is a privacy feature. More details later).
 
 ### (2). Highly Secure
-We don't collect your data, because simply put, you're not important to us. Who do you think you are, huh?
+We don't collect your data, because simply put, you're not important to us. Who do you think you are, huh?  
 Also it's against the Terms and Conditions of the app to take offence at any tweet.
 > "I didn't say no shit like that"
 
@@ -49,6 +49,7 @@ Boring technical details: The server and client are configured to run locally as
 
 ### (8) Self Destruct Sequence
 Just press the close button and check it out.
+(Note: Don't trust the cats countdown. Cats are bad at counting.)
 
 ### (9) Extremely smooth Burger menu (feat. burgers)
 This highly piece of innovative text lets you switch around the different pages this app has to offer

@@ -52,7 +52,7 @@ Boring technical details: The server and client are configured to run locally as
 Just press the close button and check it out.
 (Note: Don't trust the cats countdown. Cats are bad at counting.)
 
-### (9) Extremely smooth Burger menu (feat. burgers) ![1](https://user-images.githubusercontent.com/56085798/199285606-f1093c0e-36ab-4d8b-913a-106b98724fef.png)
+### (9) Extremely smooth Burger menu (feat. bouncy burgers) ![1](https://user-images.githubusercontent.com/56085798/199285606-f1093c0e-36ab-4d8b-913a-106b98724fef.png)
 
 This highly piece of innovative text lets you switch around the different pages this app has to offer
 

@@ -49,6 +49,7 @@ Boring technical details: The server and client are configured to run locally as
 
 ### (8) Self Destruct Sequence
 Just press the close button and check it out.
+(Note: Don't trust the cats countdown. Cats are bad at counting.)
 
 ### (9) Extremely smooth Burger menu (feat. burgers)
 This highly piece of innovative text lets you switch around the different pages this app has to offer

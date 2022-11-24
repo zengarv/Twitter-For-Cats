@@ -1,3 +1,7 @@
+"""
+Open box before eating pizza
+"""
+
 import random
 from math import atan2, cos, degrees, pi, radians, sin
 
